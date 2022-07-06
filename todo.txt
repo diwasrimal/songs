@@ -1,0 +1,16 @@
+develop initial layout
+Make login page and register page
+make search page
+make searched page to show search results
+when selected on a song, redirect to a page where song is played
+
+Additional:
+make a profile page
+make playlists, favorites, etc
+
+
+yt-dlp
+
+
+https://www.youtube.com/watch?v=EQJxzSZM_mI
+https://www.youtube.com/watch?v=W8a4sUabCUo

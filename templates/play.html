@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+
+{% block link %}
+
+  <link href="../static/musicPlayer.css" rel="stylesheet">
+
+{% endblock %}
+
+{% block main %}
+
+  <audio hidden>
+    <source src="../static/downloads/audio/{{ details.id }}.opus">
+  </audio>
+
+  <div class="container">
+  <header>
+    <div class="playlist">
+      <i class="fa fa-bars"></i>
+    </div>
+    <div class="setting">
+      <i class="fa fa-cog"></i>r
+    </div>
+  </header>
+  <main>
+    <div class="album-art">
+      <img src="{{ details.thumbnail }}" alt="thumbnail" />
+    </div>
+    <div class="player">
+      <i class="fa fa-repeat"></i> 
+      <i class="fa fa-fast-backward"></i>
+      <i class="fa fa-play"></i>
+      <i class="fa fa-pause" style="display: none"></i>
+      <i class="fa fa-fast-forward"></i>
+      <i class="fa fa-random"></i>
+    </div>
+  </main>
+  <footer>
+    <div class="title">{{ details.title }}
+    </div>
+    <div class="time-tracker">
+      <div class="timer">
+        <div class="bg">
+        </div>
+      </div>
+      <div class="time">00:80</div>
+    </div>
+  </footer>
+  <form hidden id="songChanger" action='/play'>
+    <input hidden type="text" name="songPos" value="">
+    <input hidden type="text" name="currSongId" value="{{ details.id }}">
+  <form>
+</div>
+
+
+
+
+{% endblock %}
+
+{% block script %}
+  <script>
+
+  let audio = document.querySelector("audio")
+  let songChanger = document.querySelector('#songChanger')
+
+  // Get all possible buttons
+  let playBtn = document.querySelector('.fa-play')
+  let pauseBtn = document.querySelector('.fa-pause ')
+  let rewindBtn = document.querySelector('.fa-fast-backward')
+  let repeatBtn = document.querySelector('.fa-repeat')
+  let forwardBtn = document.querySelector('.fa-fast-forward')
+  let randomBtn = document.querySelector('.fa-random')
+
+  playBtn.addEventListener('click', () => {
+    audio.play()
+    hide(playBtn)
+    show(pauseBtn)
+  })
+  pauseBtn.addEventListener('click', () => {
+    audio.pause()
+    hide(pauseBtn)
+    show(playBtn)
+  })
+  rewindBtn.addEventListener('click', () => {
+    audio.currentTime = 0
+  })
+  rewindBtn.addEventListener('dblclick', () => {
+    console.log("double clikced")
+    songChanger.elements['songPos'].value = "previous"
+    songChanger.submit()
+  })
+
+
+  function hide(elem) {
+    elem.style.display = 'none'
+  }
+  function show(elem) {
+    elem.style.display = 'block'
+  }
+
+  </script>
+  {% endblock %}
