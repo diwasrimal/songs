@@ -45,14 +45,16 @@
       <div class="time">00:80</div>
     </div>
   </footer>
-  <form hidden id="songChanger" action='/play'>
-    <input hidden type="text" name="songPos" value="">
-    <input hidden type="text" name="currSongId" value="{{ details.id }}">
+
+  <!-- Song changer form -->
+  <form hidden id="playPrev" action='/play'>
+    <input hidden type="text" name="songId" value="{{ details.prevSong }}">
+  </form>
+  <form hidden id="playNext"action="/play">
+    <input hidden type="text" name="songId" value="{{ details.nextSong }}">
   <form>
+
 </div>
-
-
-
 
 {% endblock %}
 
@@ -60,35 +62,32 @@
   <script>
 
   let audio = document.querySelector("audio")
-  let songChanger = document.querySelector('#songChanger')
 
-  // Get all possible buttons
-  let playBtn = document.querySelector('.fa-play')
-  let pauseBtn = document.querySelector('.fa-pause ')
-  let rewindBtn = document.querySelector('.fa-fast-backward')
-  let repeatBtn = document.querySelector('.fa-repeat')
-  let forwardBtn = document.querySelector('.fa-fast-forward')
-  let randomBtn = document.querySelector('.fa-random')
+  // Get all buttons
+  let play = document.querySelector('.fa-play')
+  let pause = document.querySelector('.fa-pause ')
+  let prev = document.querySelector('.fa-fast-backward')
+  let repeat = document.querySelector('.fa-repeat')
+  let next = document.querySelector('.fa-fast-forward')
+  let random = document.querySelector('.fa-random')
 
-  playBtn.addEventListener('click', () => {
+  // Controls
+
+  play.addEventListener('click', () => {
     audio.play()
-    hide(playBtn)
-    show(pauseBtn)
-  })
-  pauseBtn.addEventListener('click', () => {
-    audio.pause()
-    hide(pauseBtn)
-    show(playBtn)
-  })
-  rewindBtn.addEventListener('click', () => {
-    audio.currentTime = 0
-  })
-  rewindBtn.addEventListener('dblclick', () => {
-    console.log("double clikced")
-    songChanger.elements['songPos'].value = "previous"
-    songChanger.submit()
+    hide(play)
+    show(pause)
   })
 
+  pause.addEventListener('click', () => {
+    audio.pause()
+    hide(pause)
+    show(play)
+  })
+
+  repeat.addEventListener('click', () => audio.currentTime = 0 )
+  prev.addEventListener('click', () => document.querySelector("#playPrev").submit())
+  next.addEventListener('click', () => document.querySelector("#playNext").submit())
 
   function hide(elem) {
     elem.style.display = 'none'
@@ -98,4 +97,4 @@
   }
 
   </script>
-  {% endblock %}
+{% endblock %}
