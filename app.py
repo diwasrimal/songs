@@ -32,20 +32,17 @@ def index():
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
-    # Forget any user_id
-    session.clear()
-
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
         # Ensure username was submitted
         if not request.form.get("username"):
-            flash("Must provide username")
+            flash("Must provide username", "danger")
             return redirect("/login")
 
         # Ensure password was submitted
         if not request.form.get("password"):
-            flash("Must provide password")
+            flash("Must provide password", "danger")
             return redirect("/login")
 
         # Query database for username
@@ -53,7 +50,7 @@ def login():
 
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
-            flash("Invalid username and/or password")
+            flash("Invalid username or password", "danger")
             return redirect("/login")
 
         # Remember which user has logged in
@@ -79,8 +76,6 @@ def logout():
 @app.route("/register", methods=["GET", "POST"])
 def register():
 
-    session.clear()
-
     # Just render the HTML page if requested using GET
     if request.method == "GET":
         return render_template("register.html")
@@ -96,25 +91,29 @@ def register():
         # Validate registration
         # Ensure username was submitted
         if not username:
-            return apology("must provide username", 400)
+            flash("Must provide username", "danger")
+            return redirect("/register")
 
         # Ensure that username was unique(not already taken)
         rows = db.execute("SELECT * FROM users WHERE username = ?", username)
         if len(rows) != 0:      # Username already registered
-            return apology("Username not available")
+            flash("Username not available", "danger")
+            return redirect("/register")
 
         # Ensure password was submitted
         elif not password:
-            return apology("must provide password", 400)
+            flash("Must provide password", "danger")
+            return redirect("/register")
 
         elif not confirmation or confirmation != password:
-            return apology("passwords do not match", 400)
+            flash("Passwords do not match", "danger")
+            return redirect("/register")
 
         # Register user
         hash = generate_password_hash(password)
         db.execute("INSERT INTO users(username, hash) VALUES(?, ?)", username, hash)
 
-        # Redirect to stocks page
+        # Redirect to index page
         return redirect("/")
 
 
@@ -144,67 +143,57 @@ def results():
 @login_required
 def play():
 
-    # Request from results.html 
-    song_id = request.args.get('songId')
+    song = request.args.get('songId')
 
-    if not song_id:
-        # Request from play.html to change song
-        # If so, we retrieve songId of prev/next requested song from session['recents']
-        song_pos = request.args.get('songPos')
-        curr_song_id = request.args.get('currSongId')
-
-        if song_pos and curr_song_id:
-            curr_song_idx = session['recents'].index(curr_song_id)
-
-            if curr_song_idx >= 0:
-                if song_pos == 'previous':
-                    song_id = session['recents'][curr_song_idx - 1]
-                elif song_pos == 'next':
-                    song_id = session['recents'][curr_song_idx + 1]
-            else:
-                song_id = curr_song_id
-
-    # Record the song in recents
+    # Record the song if not in recents 
     try:
-        if not song_id in session['recents']:
-            session['recents'].append(song_id)
+        if song not in session['recents']:
+            session['recents'].append(song)
     except KeyError:
-        session['recents'] = [song_id]
+        session['recents'] = [song]
 
-    print("Here's the recnts list")
+    # Current song's index in recents list
+    idx = session['recents'].index(song)
+
+    print()
     print(session['recents'])
 
+    # Get song details and set prev and next song
+    details = db.execute("SELECT * FROM songs WHERE id = ?", song)[0]
+    details['prevSong'] = session['recents'][idx - 1] if idx > 0 else song
+    details['nextSong'] = session['recents'][idx + 1] if idx < (len(session['recents']) - 1) else song
     
-
-    song_file = f"{song_id}.opus"
+    print()
+    print(session['recents'])
+    print(details['prevSong'])
+    print(details['nextSong'])
+    print()
 
     # Download song if not downloaded
     files  = os.listdir(STORAGE)
-    if song_file not in files:
-        os.system(f'yt-dlp https://www.youtube.com/watch?v={song_id}')    
-
-    # Get song details
-    details = db.execute("SELECT * FROM songs WHERE id = ?", song_id)[0]
+    if f"{song}.opus" not in files:
+        os.system(f'yt-dlp https://www.youtube.com/watch?v={song}')
 
     return render_template('play.html', details=details)
 
 
-
 @app.route("/test")
 def test():
+
     return render_template("test.html")
+
+
 
 @app.route("/profile")
 @login_required
 def profile():
-    return apology("TODO")
+    return apology("OK")
 
 
 @app.route("/playlist")
 @login_required
 def playlist():
     return apology("TODO")
-
 
 
 @app.route("/top")
