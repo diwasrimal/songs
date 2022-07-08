@@ -4,3 +4,4 @@ ytdl
 flask_session
 requests
 cs50
+gunicorn

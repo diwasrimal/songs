@@ -26,20 +26,30 @@ repeat.addEventListener('click', () => audio.currentTime = 0 )
 prev.addEventListener('click', () => document.querySelector("#playPrev").submit())
 next.addEventListener('click', () => document.querySelector("#playNext").submit())
 
-document.querySelector('#currentTime').addEventListener("click", () => console.log(audio.currentTime))
+// Seek and duration
+// https://css-tricks.com/lets-create-a-custom-audio-player/
 
-// Seek
+const displayDuration = () => {
+  document.querySelector('#duration').innerText = convertToMins(audio.duration);
+}
 
-let progress = document.querySelector('#progress');
-let time = document.querySelector('#currentTime')
+if (audio.readyState > 0) {
+  displayDuration();
+}
+else {
+  audio.addEventListener('loadedmetadata', () => {
+    displayDuration();
+  });
+}
 
-document.querySelector('#duration').innerText = convertToMins(audio.duration)
+// Show current time and progress
 
-// Show current time
-
+const time = document.querySelector("#currentTime")
+const progress = document.querySelector("#progress-bar")
 
 progress.addEventListener('change', () => {
   audio.currentTime = (progress.value / 100) * audio.duration;
+  document.querySelector('#focusThis').focus()
   time.innerText = convertToMins(audio.currentTime)
 });
 
@@ -81,3 +91,4 @@ function convertToMins(time) {
 
   return  mins + ':' + secs;
 }
+
