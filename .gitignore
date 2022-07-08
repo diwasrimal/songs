@@ -3,4 +3,6 @@ __pycache__/
 flask_session/
 test.py
 info.json
+templates/test.html
+
 

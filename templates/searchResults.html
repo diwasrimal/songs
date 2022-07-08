@@ -6,7 +6,7 @@
   {% if songs %}
     {% for song in songs %}
 
-      <form action="/play" method="get">
+      <form class="searchResult" action="/play" method="get">
         <input type="text" hidden name="songId" value="{{ song.id }}">
         <div class="card thumbnailCard" style="width: 20rem; height: 100%">
           <img src="{{ song.thumbnail }}" class="card-img-top" alt="...">
@@ -27,11 +27,11 @@
 {% block script %}
 
 <script>
-  let thumbnails = document.querySelectorAll('.thumbnailCard')
-  let forms = document.querySelectorAll('form')
+  let cards = document.querySelectorAll('.thumbnailCard')
+  let forms = document.querySelectorAll('.searchResult')
 
-  for (let i = 0; i < thumbnails.length; i++) {
-    thumbnails[i].addEventListener('click', () => forms[i].submit())
+  for (let i = 0; i < cards.length; i++) {
+    cards[i].addEventListener('click', () => forms[i].submit())
   }
 </script>
 
