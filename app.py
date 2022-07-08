@@ -146,11 +146,9 @@ def play():
     song = request.args.get('songId')
 
     # Record the song if not in recents 
-    try:
-        if song not in session['recents']:
-            session['recents'].append(song)
-    except KeyError:
-        session['recents'] = [song]
+    if not 'recents' in session: 
+        session['recents'] = []
+    session['recents'].append(song)
 
     # Current song's index in recents list
     idx = session['recents'].index(song)
