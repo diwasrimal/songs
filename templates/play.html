@@ -31,7 +31,7 @@
       <i class="fa fa-play"></i>
       <i class="fa fa-pause" style="display: none"></i>
       <i class="fa fa-fast-forward"></i>
-      <i class="fa fa-random"></i>
+      <i class="fa fa-heart"></i>
     </div>
   </main>
   <footer>
@@ -39,12 +39,17 @@
     </div>
     <div class="time-tracker">
       <div class="timer">
-        <div class="bg">
-        </div>
+        <form style="width: 90%;">
+          <input type="range" id="progress" class="bg" min="0" max="100" step="1" value="0">
+        </form>
+        <div class="time">
+        <span id="currentTime">00:00</span>/<span id="duration"></span>
       </div>
-      <div class="time">00:80</div>
+      </div>
+      
     </div>
   </footer>
+ 
 
   <!-- Song changer form -->
   <form hidden id="playPrev" action='/play'>
@@ -59,42 +64,5 @@
 {% endblock %}
 
 {% block script %}
-  <script>
-
-  let audio = document.querySelector("audio")
-
-  // Get all buttons
-  let play = document.querySelector('.fa-play')
-  let pause = document.querySelector('.fa-pause ')
-  let prev = document.querySelector('.fa-fast-backward')
-  let repeat = document.querySelector('.fa-repeat')
-  let next = document.querySelector('.fa-fast-forward')
-  let random = document.querySelector('.fa-random')
-
-  // Controls
-
-  play.addEventListener('click', () => {
-    audio.play()
-    hide(play)
-    show(pause)
-  })
-
-  pause.addEventListener('click', () => {
-    audio.pause()
-    hide(pause)
-    show(play)
-  })
-
-  repeat.addEventListener('click', () => audio.currentTime = 0 )
-  prev.addEventListener('click', () => document.querySelector("#playPrev").submit())
-  next.addEventListener('click', () => document.querySelector("#playNext").submit())
-
-  function hide(elem) {
-    elem.style.display = 'none'
-  }
-  function show(elem) {
-    elem.style.display = 'block'
-  }
-
-  </script>
+  <script src="../static/musicPlayer.js"></script>
 {% endblock %}
