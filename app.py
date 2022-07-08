@@ -114,6 +114,7 @@ def register():
         db.execute("INSERT INTO users(username, hash) VALUES(?, ?)", username, hash)
 
         # Redirect to index page
+        flash("Registered!", "primary")
         return redirect("/")
 
 
@@ -153,20 +154,11 @@ def play():
     # Current song's index in recents list
     idx = session['recents'].index(song)
 
-    print()
-    print(session['recents'])
-
     # Get song details and set prev and next song
     details = db.execute("SELECT * FROM songs WHERE id = ?", song)[0]
     details['prevSong'] = session['recents'][idx - 1] if idx > 0 else song
     details['nextSong'] = session['recents'][idx + 1] if idx < (len(session['recents']) - 1) else song
     
-    print()
-    print(session['recents'])
-    print(details['prevSong'])
-    print(details['nextSong'])
-    print()
-
     # Download song if not downloaded
     files  = os.listdir(STORAGE)
     if f"{song}.opus" not in files:

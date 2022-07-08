@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block link %}
+{% block head %}
 
   <link href="../static/musicPlayer.css" rel="stylesheet">
 
@@ -8,48 +8,41 @@
 
 {% block main %}
 
-  <audio hidden>
+  <audio hidden preload="metadata">
     <source src="../static/downloads/audio/{{ details.id }}.opus">
   </audio>
 
-  <div class="container">
-  <header>
-    <div class="playlist">
+
+  <div class="main-container">
+    <div class="head">
       <i class="fa fa-bars"></i>
+      <i class="fa fa-cog"></i>
     </div>
-    <div class="setting">
-      <i class="fa fa-cog"></i>r
+   <div class="player-container">
+     <div class="album-art">
+        <img src="{{ details.thumbnail }}" alt="thumbnail" />
+      </div>
+     <div class="player">
+       <i class="fa fa-repeat"></i> 
+        <i class="fa fa-fast-backward"></i>
+        <i class="fa fa-play"></i>
+        <i class="fa fa-pause" style="display: none"></i>
+        <i class="fa fa-fast-forward"></i>
+        <i class="fa fa-heart"></i>
+     </div>
+   </div> 
+   <div class="title">{{ details.title }}
     </div>
-  </header>
-  <main>
-    <div class="album-art">
-      <img src="{{ details.thumbnail }}" alt="thumbnail" />
-    </div>
-    <div class="player">
-      <i class="fa fa-repeat"></i> 
-      <i class="fa fa-fast-backward"></i>
-      <i class="fa fa-play"></i>
-      <i class="fa fa-pause" style="display: none"></i>
-      <i class="fa fa-fast-forward"></i>
-      <i class="fa fa-heart"></i>
-    </div>
-  </main>
-  <footer>
-    <div class="title">{{ details.title }}
-    </div>
-    <div class="time-tracker">
+    <div class="time-tracker"> 
       <div class="timer">
-        <form style="width: 90%;">
-          <input type="range" id="progress" class="bg" min="0" max="100" step="1" value="0">
-        </form>
-        <div class="time">
-        <span id="currentTime">00:00</span>/<span id="duration"></span>
+          <input type="range" id="progress-bar" class="bg" min="0" max="100" step="1" value="0"> 
+          <div class="time">
+            <span id="currentTime">00:00</span>/<span id="duration"></span>
+          </div>
       </div>
-      </div>
-      
+    <div id="focusThis" tabindex="-1"></div>
     </div>
-  </footer>
- 
+  </div>
 
   <!-- Song changer form -->
   <form hidden id="playPrev" action='/play'>
@@ -59,7 +52,6 @@
     <input hidden type="text" name="songId" value="{{ details.nextSong }}">
   <form>
 
-</div>
 
 {% endblock %}
 

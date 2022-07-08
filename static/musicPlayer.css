@@ -1,54 +1,43 @@
-@import url('https://css.gg/play-button.css');
-
-
-.container {
+.main-container {
+  font-size: large;
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  gap: 10px 0;
+  padding: 30px 40px;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%,-50%);
-  width: 600px;
-  height: 360px;
   background: #111;
   box-shadow: 0 30px 20px -20px #000;
   box-sizing: border-box;
   border-radius: 8px;
 }
-header {
-  width: 100%;
+
+.main-container .head {
+  display: flex;
+  justify-content: space-between;
   height: 2rem;
   line-height: 2rem;
   font-size: 1.2rem;
-  padding: 1rem 2rem;
-  clear: both;
-  box-sizing: border-box;
+
 }
-header .playlist {
-  float: left;
-  cursor: pointer;
+.main-container .head .fa {
+  transition: all 0.2s ease;
 }
-header .setting {
-  float: right;
-  cursor: pointer;
+
+.player-container {
+  width: 100%;
+  display: flex;
+  padding: 10px;
+  gap: 20px 50px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
 }
-main {
-  clear: both;
-  padding: 1rem 2rem;
-  box-sizing: border-box;
-}
-main .album-art {
-  float: left;
-  padding: 0.5rem;
-  background: #000;
-  border-radius: 8px;
-}
-main .album-art img {
-  width: 240px;
-  height: 130px;
-  border-radius: 8px;
-  margin: 15px 0;
-  box-sizing: border-box;
-}
-main .player {
+
+.player {
   position: relative;
   float: right;
   width: 176px;
@@ -59,18 +48,19 @@ main .player {
   border: solid 2px #000;
   box-shadow: inset 0 1px 2px rgba(255,255,255,0.2), 0 4px 2px rgba(0,0,0,0.2);
 }
-main .player .fa {
+.player .fa {
   font-size: 1.2rem;
   position: absolute;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-main .fa:hover {
+.fa:hover {
   color: cyan;
   text-shadow: 0 0 4px cyan;
+  cursor: pointer;
 }
-main .player .fa.fa-play, .fa.fa-pause {
+.player .fa.fa-play, .fa.fa-pause {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -84,90 +74,67 @@ main .player .fa.fa-play, .fa.fa-pause {
   text-align: center;
   background: linear-gradient(0deg,#111,#222);
 }
-main .player .fa.fa-repeat {
+
+.album-art {
+  float: left;
+  padding: 0.5rem;
+  background: #000;
+  border-radius: 8px;
+}
+
+.album-art img {
+  width: 240px;
+  height: 130px;
+  border-radius: 8px;
+  margin: 15px 0;
+  box-sizing: border-box;
+}
+
+.player .fa.fa-repeat {
   top: 8%;
   left: 50%;
   transform: translatex(-50%);
 }
-main .player .fa.fa-fast-backward {
+
+.player .fa.fa-fast-backward {
   top: 50%;
   left: 8%;
   transform: translatey(-50%);
 }
-main .player .fa.fa-fast-forward {
+
+.player .fa.fa-fast-forward {
   top: 50%;
   left: 82%;
   transform: translatey(-50%);
 }
-main .player .fa.fa-heart {
+
+.player .fa.fa-heart {
   top: 82%;
   left: 50%;
   transform: translatex(-50%);
 }
-footer {
-  clear: both;
-  padding: 2rem 2rem;
-  color: #999;
-  text-shadow: 2px 2px #111;
-  font-family: 'roboto', sans-serif;
-  font-size: larger;
-  box-sizing: border-box;
-}
-footer .title {
+
+.title {
   color: white;
   text-align: center;
   padding-bottom: 0.5rem;
 }
-footer .time-tracker {
+
+.time-tracker {
   border-top: solid 1px #000;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
   padding-top: 0.5rem;
   box-sizing: border-box;
-}
-footer .time-tracker .timer {
   display: flex;
-  position: relative;
-  padding: 0 10px;
-  float: left;
-  justify-content: space-between;
-  width: 100%;
-  height: 2rem;
-  cursor: pointer;
+  justify-content: center;
 }
 
-footer #progress {
- position: relative;
- top: 5px;
+.time-tracker .timer {
+  display: flex;
+  justify-content: center;
+  gap: 0 20px;
 }
 
-footer .time-tracker .time {
+.time-tracker .time {
  line-height: 2rem;
 }
-
-/*
-footer .time-tracker .timer .bg {
-  position: relative;
-  top: 50%;
-  margin-right: 0.5rem;
-  transform: translatey(-50%);
-  height: 0.6rem;
-  border-top: solid 1px #000;
-  border-radius: 10px;
-  background: none;
-  box-shadow: inset 0 -1px 1px rgba(255,255,255,0.2);
-  overflow: hidden;
-  box-sizing: border-box;
-}
-footer .time-tracker .timer .bg:before {
-  content: "";
-  top: 50%;
-  transform: translatey(-50%);
-  position: absolute;
-  height: 0.2rem;
-  border-radius: 10px;
-  width: 10%;
-  background: cyan;
-  box-shadow: 0 0 2px 2px cyan;
-}
-*/
-
