@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block main %}
+
+  <div class="d-flex flex-row flex-wrap" style="gap: 25px; justify-content: space-around;">
+  {% if songs %}
+    {% for song in songs %}
+
+      <form class="searchResult" action="/play" method="get">
+        <input type="text" hidden name="songId" value="{{ song.id }}">
+        <div class="card thumbnailCard" style="width: 20rem; height: 100%">
+          <img src="{{ song.thumbnail }}" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">{{ song.title }}</h5>
+            <p class="card-text">{{ song.channel }}</p>
+          </div>
+        </div>
+      </form>
+    {% endfor %}
+  {% else %}
+    <h1> No matching results ! </h1>
+  {% endif %}
+  </div>
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+  let cards = document.querySelectorAll('.thumbnailCard')
+  let forms = document.querySelectorAll('.searchResult')
+
+  for (let i = 0; i < cards.length; i++) {
+    cards[i].addEventListener('click', () => forms[i].submit())
+  }
+</script>
+
+{% endblock %}

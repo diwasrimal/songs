@@ -121,12 +121,6 @@ def register():
 @app.route("/search")
 @login_required
 def search():
-    return render_template("search.html")
-
-
-@app.route("/results")
-@login_required
-def results():
     name = request.args.get("name")
     songs = search_song(name)
 
@@ -137,7 +131,7 @@ def results():
         except ValueError:
             continue
 
-    return render_template("results.html", songs=songs)
+    return render_template("searchResults.html", songs=songs)
 
 
 @app.route("/play")
@@ -151,6 +145,10 @@ def play():
         session['recents'] = []
     session['recents'].append(song)
 
+    print()
+    print(song)
+    print()
+    
     # Current song's index in recents list
     idx = session['recents'].index(song)
 

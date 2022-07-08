@@ -4,11 +4,8 @@
   flex-direction: column;
   max-width: 600px;
   gap: 10px 0;
+  margin: auto;
   padding: 30px 40px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%,-50%);
   background: #111;
   box-shadow: 0 30px 20px -20px #000;
   box-sizing: border-box;
