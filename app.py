@@ -175,16 +175,11 @@ def test():
 @app.route("/profile")
 @login_required
 def profile():
-    return apology("OK")
+    return render_template("profile.html")
 
 
 @app.route("/playlist")
 @login_required
 def playlist():
-    return apology("TODO")
+    return render_template("playlists.html")
 
-
-@app.route("/top")
-@login_required
-def top():
-    return apology("TODO")
