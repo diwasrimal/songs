@@ -22,6 +22,18 @@ db = SQL("sqlite:///music.db")
 # Dir where donwloaded songs are
 STORAGE = 'static/downloads/audio'
 
+# Make sure GCS_ENGINE_ID is set
+if not os.environ.get("GCS_ENGINE_ID"):
+    raise RuntimeError("GCS_ENGINE_ID not set")
+
+# Make sure GCS_API_KEY  is set
+if not os.environ.get("GCS_API_KEY"):
+    raise RuntimeError("GCS_API_KEY not set")
+
+
+##
+### Routes
+##
 
 @app.route("/")
 @login_required

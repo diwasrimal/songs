@@ -1,8 +1,11 @@
-from flask import redirect, render_template, request, session
-from functools import wraps
 import innertube
 import json
+import os
+import re
 
+from flask import redirect, render_template, request, session
+from functools import wraps
+from lyrics_extractor import SongLyrics
 
 def search_song(q):
 	client = innertube.InnerTube("WEB")
@@ -34,6 +37,21 @@ def search_song(q):
 			})
 
 	return data
+
+
+def get_lyrics(name):
+	
+	# Contact engine
+	gcs_engine_id = os.environ.get("GCS_API_KEY")
+	gcs_api_key = os.environ.get("GCS_ENGINE_ID")
+
+	# Extract data
+	extract_lyrics = SongLyrics(gcs_engine_id, gcs_api_key)
+	lyrics = extract_lyrics.get_lyrics(name)['lyrics']
+
+	lyrics = ''.join(re.split("\[.*?\]", lyrics))
+
+	return lyrics
 
 
 def apology(message, code=400):
