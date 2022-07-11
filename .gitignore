@@ -8,3 +8,5 @@ static/downloads/audio
 music.db
 .sqliterc
 improvements.txt
+musictest/
+keys.ps1
