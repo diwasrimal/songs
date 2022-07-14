@@ -5,8 +5,8 @@ test.py
 info.json
 templates/test.html
 static/downloads/audio
-music.db
 .sqliterc
 improvements.txt
 musictest/
-keys.ps1
+run.ps1
+run.bat

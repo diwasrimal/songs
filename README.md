@@ -4,50 +4,55 @@
 
 ## yt-dlp
 
-### Installation
-You can install yt-dlp binary exexutable from [here](https://pypi.org/project/yt-dlp/#installation):
+**yt-dlp** is a youtube-dl fork based on the now inactive youtube-dlc. It lets you download vidoes and audios from youtube with a lot of flexibility. It is a very powerful tool
 
-After installation, be sure to add yt-dlp to your system variable path. Try running yt-dlp in terminal to check
+### Installation
+You can install `yt-dlp` binary executable from [here](https://pypi.org/project/yt-dlp/#installation):
+
+After installation, be sure to add `yt-dlp` to your system variable path. Try running yt-dlp in terminal to check
 your installation
 
 ### Usage
+
+You can read the [docs](https://github.com/yt-dlp/yt-dlp#readme) to get an understanding of most of the commands used in this project. The commands are in a config file in this project direcory
+
 `yt-dlp [OPTIONS] [--] URL [URL...]`
 
 Some options beneficial for this project 
 
-`-x, --extract-audio`          
+- `-x, --extract-audio`          
 Convert video files to audio-only files
 (requires ffmpeg and ffprobe)
 
-`--audio-format FORMAT`           
-Format to convert the audio to when -x is
-used. (currently supported: best (default),
-mp3, aac, m4a, opus, vorbis, flac, alac,
-wav). You can specify multiple rules using
-similar syntax as --remux-video
+- `--audio-format FORMAT`   
+Select the format to download the current audio file
+(currently supported: best (default),
+`mp3`, `aac`, `m4a`, `opus`, `vorbis`, `flac`, `alac`,`wav`). You can specify multiple rules using
+similar syntax as `--remux-video`
 
-`--audio-quality QUALITY`
+- `--audio-quality QUALITY`     
 Specify ffmpeg audio quality to use when
-converting the audio with -x. Insert a value
+converting the audio with `-x`. Insert a value
 between 0 (best) and 10 (worst) for VBR or a
 specific bitrate like 128K (default 5)   
 
-`--embed-thumbnail `
+- `--embed-thumbnail `  
 Embed thumbnail in the audio or video as cover
 art. Requires mutagen (Can be installed using `pip`) (sometimes ffmpeg may not be sufficient)
+
 
 
 ## FFmpeg  4.0 or newer:
 [FFmpeg](https://ffmpeg.org/) is a free and open-source software project consisting of a suite of libraries and programs for handling video, audio, and other multimedia files and streams. At its core is the command-line ffmpeg tool itself, designed for processing of video and audio files.
 
-Here in this project, we use ffmpeg to convert files downloaded using yt-dlp into music files. It convert media file extensions and is very helpful for donwlading .mp3 like file
+Here in this project, we use ffmpeg to convert files downloaded using `yt-dlp` into music files. It convert media file extensions and is very helpful for donwlading `.mp3` like file
 
 
 # Configuration
 
 ## Making a config file for yt-dlp
 
-We have to make a config file for yt-dlp that works specifically for this project. The file is named `yt-dlp.conf` and it directs the yt-dlp downloader how to download and convert music files
+We have to make a config file for yt-dlp that works specifically for this project. The file is named `yt-dlp.conf` and it directs the `yt-dlp` downloader how to download and convert music files
 
 ## Configure Flask
 
@@ -116,44 +121,44 @@ It fetches, extracts and returns the song's title and song lyrics from various w
 
 ### Requirements
 
-    You will need an API Key and Engine ID of Google Custom Search JSON API.
+You will need an API Key and Engine ID of Google Custom Search JSON API.
 
-        Create your new Custom Search Engine here to get your Engine ID: https://cse.google.com/cse/create/new
+Create your new Custom Search Engine here to get your Engine ID: https://cse.google.com/cse/create/new
 
-        Add any of the following or all websites as per your choice in your Custom Search Engine:
-            https://genius.com/
-            http://www.lyricsted.com/
-            http://www.lyricsbell.com/
-            https://www.glamsham.com/
-            http://www.lyricsoff.com/
-            http://www.lyricsmint.com/
+Add any of the following or all websites as per your choice in your Custom Search Engine:
+    https://genius.com/
+    http://www.lyricsted.com/
+    http://www.lyricsbell.com/
+    https://www.glamsham.com/
+    http://www.lyricsoff.com/
+    http://www.lyricsmint.com/
 
-        Get your API key here: https://developers.google.com/custom-search/v1/overview
+Get your API key here: https://developers.google.com/custom-search/v1/overview
 
 
 ### Setup API key and engine id
 #### MacOS/Linux
 ```Bash
-export GCS_API_KEY=AIzaSyBvnH37Vki63LwDty_MkmVQBIJEWDs1yaA
-export GCS_ENGINE_ID=328400a11a17edf75
+export GCS_API_KEY=your_key
+export GCS_ENGINE_ID=your_id
 ```
 
 #### Windows
 ```cmd
-set GCS_API_KEY=AIzaSyBvnH37Vki63LwDty_MkmVQBIJEWDs1yaA
-set GCS_ENGINE_ID=328400a11a17edf75
+set GCS_API_KEY=your_key
+set GCS_ENGINE_ID=your_id
 ```
 
 #### Windows (Powershell)
 ```powershell
-$env:GCS_ENGINE_ID = "328400a11a17edf75"
-$env:GCS_API_KEY = "AIzaSyBvnH37Vki63LwDty_MkmVQBIJEWDs1yaA"
+$env:GCS_ENGINE_ID = "your_id"
+$env:GCS_API_KEY = "your_key"
 ```
-
 
 ### How to use
 ```Py
 from lyrics_extractor import SongLyrics
+
 
 extract_lyrics = SongLyrics(GCS_API_KEY, GCS_ENGINE_ID)
 

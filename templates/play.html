@@ -8,19 +8,24 @@
 
 {% block main %}
 
-  <audio hidden preload="metadata">
-    <source src="../static/downloads/audio/{{ details.id }}.opus">
-  </audio>
+  {% if not song %}
 
+    <h1>Song not found!</h1>
+
+  {% else %}
+
+  <audio hidden preload="metadata">
+    <source src="../static/downloads/audio/{{ song.id }}.opus">
+  </audio>
 
   <div class="main-container">
     <div class="head">
-      <i class="fa fa-bars"></i>
+      <i class="fa fa-bars" id="lyrics-shower"></i>
       <i class="fa fa-cog"></i>
     </div>
    <div class="player-container">
      <div class="album-art">
-        <img src="{{ details.thumbnail }}" alt="thumbnail" />
+        <img src="{{ song.thumbnail }}" alt="thumbnail" />
       </div>
      <div class="player">
        <i class="fa fa-repeat"></i> 
@@ -31,7 +36,7 @@
         <i class="fa fa-heart"></i>
      </div>
    </div> 
-   <div class="title">{{ details.title }}
+   <div class="title">{{ song.title }}
     </div>
     <div class="time-tracker"> 
       <div class="timer">
@@ -46,12 +51,31 @@
 
   <!-- Song changer form -->
   <form hidden id="playPrev" action='/play'>
-    <input hidden type="text" name="songId" value="{{ details.prevSong }}">
+    <input hidden type="text" name="songId" value="{{ song.prevSong }}">
   </form>
   <form hidden id="playNext"action="/play">
-    <input hidden type="text" name="songId" value="{{ details.nextSong }}">
-  <form>
+    <input hidden type="text" name="songId" value="{{ song.nextSong }}">
+  </form>
 
+  <!-- Lyrics shown here -->
+  <div class="main-container" id="lyrics-div" style="display: none">
+
+    <h3>Lyrics</h3>
+    {% if song['lyrics'] %}
+
+      {% autoescape false %}
+        {{ song['lyrics'] }}
+      {% endautoescape %}
+
+    {% else %}
+
+      Lyrics not found!
+
+    {% endif %}
+    
+  </div>
+
+  {% endif %}
 
 {% endblock %}
 

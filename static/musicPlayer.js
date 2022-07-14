@@ -65,7 +65,7 @@ const clock2 = setInterval(() => {
     const percent = (audio.buffered.end(0) / audio.duration) * 100;
     // document.getElementById("loadingProgress").innerText = `Loading : ${percent.toFixed(2)}%`;
     if (percent >= 100) {
-      clearInterval(clock2);
+clearInterval(clock2);
     }
   }
   catch (e) {
@@ -73,11 +73,23 @@ const clock2 = setInterval(() => {
   }
 })
 
+// Show lyrics if wanted
+let lyricsDiv = document.querySelector('#lyrics-div');
+document.querySelector('#lyrics-shower').addEventListener('click', () => {
+  if (lyricsDiv.style.display == 'none') {
+    show(lyricsDiv);
+  }
+  else {
+    hide(lyricsDiv);
+  }
+});
+
+
 function hide(elem) {
-  elem.style.display = 'none'
+  elem.style.display = 'none';
 }
 function show(elem) {
-  elem.style.display = 'block'
+  elem.style.display = 'block';
 }
 
 function convertToMins(time) {
