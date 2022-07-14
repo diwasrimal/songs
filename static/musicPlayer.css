@@ -1,5 +1,15 @@
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 30px 30px;
+  height: 100%;
+}
+
 .main-container {
   font-size: large;
+  color: white;
   display: flex;
   flex-direction: column;
   max-width: 600px;
@@ -116,7 +126,6 @@
 }
 
 .title {
-  color: white;
   text-align: center;
   padding-bottom: 0.5rem;
 }
@@ -139,4 +148,10 @@
 .time-tracker .time {
  line-height: 2rem;
  color: lavender;
+}
+
+#lyrics-div {
+  max-height: 500px;
+  overflow-y: scroll;
+  text-align: left;
 }

@@ -7,7 +7,6 @@
     {% for song in songs %}
 
       <form class="searchResult" action="/play" method="get">
-        <input type="text" hidden name="songId" value="{{ song.id }}">
         <div class="card thumbnailCard" style="width: 20rem; height: 100%">
           <img src="{{ song.thumbnail }}" class="card-img-top" alt="...">
           <div class="card-body">
@@ -15,6 +14,10 @@
             <p class="card-text">{{ song.channel }}</p>
           </div>
         </div>
+        <input type="text" hidden name="songId" value="{{ song.id }}">
+        <!-- <input type="text" hidden name="songTitle" value="{{ song.title }}"> -->
+        <!-- <input type="text" hidden name="songThumbnail" value="{{ song.thumbnail }}"> -->
+        <!-- <input type="text" hidden name="songChannel" value="{{ song.channel }}"> -->
       </form>
     {% endfor %}
   {% else %}

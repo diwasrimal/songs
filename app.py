@@ -4,7 +4,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from cs50 import SQL
 import os
 
-from helpers import apology, login_required, search_song
+from helpers import apology, login_required, search_song, get_lyrics
 
 app = Flask(__name__)
 
@@ -133,15 +133,14 @@ def register():
 @app.route("/search")
 @login_required
 def search():
+
     name = request.args.get("name")
     songs = search_song(name)
 
-    # Record song uniquely in database
+    # Temporarily store searches (will be used in /play)
     for song in songs:
-        try:
-            db.execute("INSERT INTO songs(id, title, thumbnail, channel) VALUES (?, ?, ?, ?)", song['id'], song['title'], song['thumbnail'], song['channel'] )
-        except ValueError:
-            continue
+        db.execute("INSERT INTO searches(id, title, channel, thumbnail) VALUES (?, ?, ?, ?)", 
+            song['id'], song['title'], song['channel'], song['thumbnail'])
 
     return render_template("searchResults.html", songs=songs)
 
@@ -150,36 +149,67 @@ def search():
 @login_required
 def play():
 
-    song = request.args.get('songId')
+    # Get info in that song
+    id = request.args.get('songId')
+    if not id or id == '':
+        return render_template("play.html")
 
-    # Record the song if not in recents 
-    if not 'recents' in session: 
-        session['recents'] = []
-    session['recents'].append(song)
+    # Check if song is in database
+    result = db.execute("SELECT * FROM songs WHERE id = ?", id)
 
-    print()
-    print(song)
-    print()
-    
-    # Current song's index in recents list
-    idx = session['recents'].index(song)
+    # Record song if not in database
+    if result == []:
 
-    # Get song details and set prev and next song
-    details = db.execute("SELECT * FROM songs WHERE id = ?", song)[0]
-    details['prevSong'] = session['recents'][idx - 1] if idx > 0 else song
-    details['nextSong'] = session['recents'][idx + 1] if idx < (len(session['recents']) - 1) else song
-    
-    # Download song if not downloaded
-    files  = os.listdir(STORAGE)
-    if f"{song}.opus" not in files:
-        os.system(f'yt-dlp https://www.youtube.com/watch?v={song}')
+        # Get basic details from searches
+        song = db.execute("SELECT * FROM searches WHERE id = ?", id)[0]
+        db.execute("DELETE FROM searches")
 
-    return render_template('play.html', details=details)
+        # Get lyrics
+        try:
+            lyrics = get_lyrics(song['title'])
+        except Exception:
+            lyrics = "Could not find lyrics"
+
+        # Download song and set songfile
+        file = f"{id}.opus"
+        if file not in os.listdir(STORAGE):
+            os.system(f'yt-dlp https://www.youtube.com/watch?v={id}')
+
+        # Record
+        db.execute("INSERT INTO songs(id, title, channel, thumbnail, lyrics, file) VALUES (?, ?, ?, ?, ?, ?)", 
+            song['id'], song['title'], song['channel'], song['thumbnail'], lyrics, file)
+
+        # Set lyrics and filepath
+        song['lyrics'] = lyrics.replace('\n\n', '\n')
+        song['file'] = f"{STORAGE}/{file}"
+
+    else:
+        song = result[0]
+
+    # Record song in recently played list
+    try:
+        if id not in session['recents']:
+            session['recents'].append(id)
+    except KeyError:
+        session['recents'] = [id]
+
+    # Set previous and next song 
+    idx = session['recents'].index(id)  # Current song's index in recents list
+    song['prevSong'] = session['recents'][idx - 1] if idx > 0 else id
+    song['nextSong'] = session['recents'][idx + 1] if idx < (len(session['recents']) - 1) else id
+
+    song['lyrics'] = song['lyrics'].replace('\n', '<br>')
+
+    for key in song:
+        print(song[key])
+
+    return render_template("play.html", song=song)
 
 
 @app.route("/test")
 def test():
 
+    print(request.args.get("this"))
     return render_template("test.html")
 
 
