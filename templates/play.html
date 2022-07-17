@@ -2,7 +2,7 @@
 
 {% block head %}
 
-  <link href="../static/musicPlayer.css" rel="stylesheet">
+  <link href="../static/css/musicPlayer.css" rel="stylesheet">
 
 {% endblock %}
 
@@ -16,6 +16,7 @@
 
   <audio hidden preload="metadata">
     <source src="../static/downloads/audio/{{ song.id }}.opus">
+    <input hidden class="songId" value="{{ song.id }}">
   </audio>
 
   <div class="main-container">
@@ -33,7 +34,11 @@
         <i class="fa fa-play"></i>
         <i class="fa fa-pause" style="display: none"></i>
         <i class="fa fa-fast-forward"></i>
-        <i class="fa fa-heart"></i>
+        {% if song.favorite %}
+          <i class="fa fa-heart clicked"></i>
+        {% else %}
+          <i class="fa fa-heart"></i>
+        {% endif %}
      </div>
    </div> 
    <div class="title">{{ song.title }}
@@ -59,7 +64,6 @@
 
   <!-- Lyrics shown here -->
   <div class="main-container" id="lyrics-div" style="display: none">
-
     <h3>Lyrics</h3>
     {% if song['lyrics'] %}
 
@@ -72,7 +76,6 @@
       Lyrics not found!
 
     {% endif %}
-    
   </div>
 
   {% endif %}
@@ -80,5 +83,8 @@
 {% endblock %}
 
 {% block script %}
-  <script src="../static/musicPlayer.js"></script>
+  <script src="/static/scripts/hoverEffects.js"></script>     <!-- Implements hovereffects for each buttons -->
+  <script src="/static/scripts/musicControls.js"></script>   <!-- Controls music controllers play, pause, prevoius, next -->
+  <script src="/static/scripts/seekAndTime.js"></script>   <!-- Shows time and adds music progress seek -->
+  <script src="/static/scripts/addToFavs.js"></script>     <!-- Adds and removes from list of favorite songs -->
 {% endblock %}

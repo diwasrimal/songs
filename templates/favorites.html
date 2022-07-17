@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block head %}
+  <link href="/static/css/favorites.css" rel="stylesheet">
+{% endblock %}
+
+{% block main %}
+
+{% if favorites %}
+<ul class="list-group list-group-flush">
+  {% for fav in favorites %}
+    <li class="list-group-item bg-dark fav-item">
+      <div class="fav-container">
+        <div> <a href="/play?songId={{ fav.id }}">{{ fav.title }}</a> </div>
+        <div> <i class="fa fa-heart clicked"></i> </div>
+        <input hidden class="songId" value="{{ fav.id }}">
+      </div>
+    </li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}
+
+{% block script %}
+  <script src="/static/scripts/hoverEffects.js"></script>     <!-- Implements hovereffects for each buttons -->
+  <script src="/static/scripts/addToFavs.js"></script>     <!-- Adds and removes from list of favorite songs -->
+{% endblock %}

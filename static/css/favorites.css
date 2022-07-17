@@ -1,0 +1,30 @@
+.clicked, .hovered {
+  color: cyan;
+  text-shadow: 0 0 4px cyan;
+  cursor: pointer;
+}
+
+.fav-item{
+  margin: 5px 0;
+  border-radius: 5px;
+
+}
+
+.fav-container {
+  display: flex;
+  color: whitesmoke;
+  font-size: 19px;
+  padding: 5px 20px;
+  width: 100%;
+}
+.fav-container div:nth-of-type(1) { flex-grow: 3; }
+.fav-container a {
+  text-decoration: none; 
+  color: whitesmoke;
+  transition: font-size 0.15s, color 0.15s;
+}
+
+.fav-container a:hover {
+  color: cyan;
+  font-size: 19.5px;
+}
