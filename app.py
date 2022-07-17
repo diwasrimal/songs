@@ -170,7 +170,7 @@ def play():
         except Exception:
             lyrics = "Could not find lyrics"
 
-        # Download song and set songfile
+        # Download song
         file = f"{id}.opus"
         if file not in os.listdir(STORAGE):
             os.system(f'yt-dlp https://www.youtube.com/watch?v={id}')
@@ -186,6 +186,7 @@ def play():
     else:
         song = result[0]
 
+
     # Record song in recently played list
     try:
         if id not in session['recents']:
@@ -197,6 +198,10 @@ def play():
     idx = session['recents'].index(id)  # Current song's index in recents list
     song['prevSong'] = session['recents'][idx - 1] if idx > 0 else id
     song['nextSong'] = session['recents'][idx + 1] if idx < (len(session['recents']) - 1) else id
+
+    # See if song is favorite or not
+    result = db.execute("SELECT * FROM favorites WHERE user_id = ? AND song_id = ?", session['user_id'], id)
+    song['favorite'] = True if len(result) != 0 else False
 
     song['lyrics'] = song['lyrics'].replace('\n', '<br>')
 
@@ -220,8 +225,44 @@ def profile():
     return render_template("profile.html")
 
 
-@app.route("/playlist")
+""" Adds/Removes songs from favorites """
+@app.route("/favorites", methods=["GET", "POST"])
 @login_required
-def playlist():
-    return render_template("playlists.html")
+def favorites():
+
+    # If requested to add/remove song from favorites
+    if request.method == "POST":
+
+        # Get song id from play.html
+        song = request.json['songId']
+        if not song:
+            return apology("An error occured!")
+
+        title = db.execute("SELECT title FROM songs WHERE id = ?", song)[0]['title']
+
+        # Search song in database
+        result = db.execute("SELECT * FROM favorites WHERE user_id = ? AND song_id = ?", session['user_id'], song)
+
+        # Add song to favorites if not listed else remove
+        if result == []:
+            db.execute("INSERT INTO favorites(user_id, song_id) VALUES(?, ?)", session['user_id'], song)
+            return f"Added {title}"
+        else:
+            db.execute("DELETE FROM favorites WHERE user_id = ? AND song_id = ?", session['user_id'], song)
+            return f"Removed {title}"
+
+    # If requested via GET
+    else:
+
+        # Collect data from database
+        results = db.execute("SELECT * FROM favorites WHERE user_id = ?", session['user_id'])
+        if results == []:
+            return render_template("favorites.html")
+
+        favorites = []
+        for res in results:
+            song_info = db.execute("SELECT * FROM songs WHERE id = ?", res['song_id'])[0]
+            favorites.append(song_info)
+
+        return render_template("favorites.html", favorites=favorites)
 
