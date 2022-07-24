@@ -177,7 +177,8 @@ def play():
 
         # Record
         db.execute("INSERT INTO songs(id, title, channel, thumbnail, lyrics, file) VALUES (?, ?, ?, ?, ?, ?)", 
-            song['id'], song['title'], song['channel'], song['thumbnail'], lyrics, file)
+            song['id'], song['title'], song['channel'], song['thumbnail'], lyrics, file
+            )
 
         # Set lyrics and filepath
         song['lyrics'] = lyrics.replace('\n\n', '\n')
@@ -205,8 +206,11 @@ def play():
 
     song['lyrics'] = song['lyrics'].replace('\n', '<br>')
 
-    for key in song:
-        print(song[key])
+    # Details shown in terminal for debugging issues
+    print('\n')
+    for v in song.values():
+        print(v)
+    print('\n')
 
     return render_template("play.html", song=song)
 
@@ -265,4 +269,3 @@ def favorites():
             favorites.append(song_info)
 
         return render_template("favorites.html", favorites=favorites)
-
