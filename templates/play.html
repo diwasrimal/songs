@@ -1,11 +1,16 @@
 {% extends "layout.html" %}
 
 {% block head %}
+  <link href="../static/css/musicPlayer.css" rel="stylesheet">    <!-- Styles -->
 
-  <link href="../static/css/musicPlayer.css" rel="stylesheet">
-
+  <script defer src="/static/scripts/hoverEffects.js"></script>     <!-- Implements hover effects for each buttons -->
+  <script defer src="/static/scripts/musicControls.js"></script>   <!-- Implements play, pause, prevoius, next  buttons -->
+  <script defer src="/static/scripts/seekAndTime.js"></script>   <!-- Shows time, duration and runs progress bar -->
+  <script defer src="/static/scripts/addToFavs.js"></script>     <!-- Adds / removes from favorites -->
+  <script defer src="/static/scripts/downloader.js"></script>     <!-- Downloads song -->
 {% endblock %}
 
+<!-- Main block begin -->
 {% block main %}
 
   {% if not song %}
@@ -15,14 +20,22 @@
   {% else %}
 
   <audio hidden preload="metadata">
-    <source src="../static/downloads/audio/{{ song.id }}.opus">
+    <source src="/static/downloads/audio/{{ song.id }}.opus">
     <input hidden class="songId" value="{{ song.id }}">
   </audio>
+
 
   <div class="main-container">
     <div class="head">
       <i class="fa fa-bars" id="lyrics-shower"></i>
-      <i class="fa fa-cog"></i>
+
+      <!-- Downloads song if clicked -->
+      <!-- <a download="{{ song.title }}.opus" href="/static/downloads/audio/{{ song.id }}" id="download-link"> -->
+      <!-- <a download="{{ song.title }}.opus" href="../static/downloads/audio/{{ song.id }}.opus" id="download"> -->
+      <a download="{{ song.title }}.opus" href="/static/downloads/audio/{{ song.id }}.opus">
+        <i class="fa fa-download"></i>
+      </a>
+
     </div>
    <div class="player-container">
      <div class="album-art">
@@ -81,10 +94,8 @@
   {% endif %}
 
 {% endblock %}
+<!-- Main block end -->
 
 {% block script %}
-  <script src="/static/scripts/hoverEffects.js"></script>     <!-- Implements hovereffects for each buttons -->
-  <script src="/static/scripts/musicControls.js"></script>   <!-- Controls music controllers play, pause, prevoius, next -->
-  <script src="/static/scripts/seekAndTime.js"></script>   <!-- Shows time and adds music progress seek -->
-  <script src="/static/scripts/addToFavs.js"></script>     <!-- Adds and removes from list of favorite songs -->
+
 {% endblock %}

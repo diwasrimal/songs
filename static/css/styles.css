@@ -9,6 +9,7 @@
 */
 .bg-custom {
     background-image: linear-gradient(15deg, #BBDBBE 0%, #DEEBDD 100%);
+    /*background-image: linear-gradient(15deg, #D7E1EC 0%, #FFFFFF 100%);*/
 }
 
 
@@ -48,10 +49,11 @@ body {
     background: -webkit-linear-gradient(to right, #B0DAB9, #DAD299);
     /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to right, #B0DAB9, #DAD299);
+    /*background: linear-gradient(to right, #D7E1EC, #FFFFFF);*/
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
 }
 
+#
 /* 
  * styles for song thumbnails shown after search
  * used in searched.html  

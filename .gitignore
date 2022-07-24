@@ -4,9 +4,9 @@ flask_session/
 test.py
 info.json
 templates/test.html
-static/downloads/audio
+static/downloads/audio/*
 .sqliterc
 improvements.txt
 musictest/
 run.ps1
-run.bat
+test 
