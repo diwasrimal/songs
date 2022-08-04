@@ -94,7 +94,7 @@ pip install -r requirements.txt
 
 ## Embedding lyrics 
 
-**[music-tag](https://github.com/KristoforMaynard/music-tag)** is a library for editing audio metadata with an interface that does not depend on the underlying file format. In other words, editing mp3 files should not be any different from flac, m4a, ... This library is just a layer on top of mutagen, which does all the heavy lifting.
+**[music-tag](https://github.com/KristoforMaynard/music-tag)** is a library for editing audio metadata with an interface that does not depend on the underlying file format. In other words, editing mp3 files should not be any different from `flac`, `m4a`, ... This library is just a layer on top of mutagen, which does all the heavy lifting.
 
 `pip install music-tag`
 

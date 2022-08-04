@@ -2,6 +2,8 @@
 
 {% block head %}
   <link href="/static/css/favorites.css" rel="stylesheet">
+  <script defer src="/static/scripts/hoverEffects.js"></script>     <!-- Implements hovereffects for each buttons -->
+  <script defer src="/static/scripts/addToFavs.js"></script>     <!-- Adds and removes from list of favorite songs -->
 {% endblock %}
 
 {% block main %}
@@ -19,12 +21,7 @@
   {% endfor %}
 </ul>
 {% else %}
-  <h1>You do not have any favorites listed!</h1>
+  <h1>No favorites!</h1>
 {% endif %}
 
-{% endblock %}
-
-{% block script %}
-  <script src="/static/scripts/hoverEffects.js"></script>     <!-- Implements hovereffects for each buttons -->
-  <script src="/static/scripts/addToFavs.js"></script>     <!-- Adds and removes from list of favorite songs -->
 {% endblock %}

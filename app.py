@@ -4,7 +4,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from cs50 import SQL
 import os
 
-from helpers import apology, login_required, search_song, get_lyrics
+from helpers import apology, login_required, search_song, get_lyrics, embed_lyrics, look_lyrics
 
 app = Flask(__name__)
 
@@ -20,7 +20,7 @@ Session(app)
 db = SQL("sqlite:///music.db")
 
 # Dir where donwloaded songs are
-STORAGE = 'static/downloads/audio'
+STORAGE = 'static\\downloads\\audio'
 
 # Make sure GCS_ENGINE_ID is set
 if not os.environ.get("GCS_ENGINE_ID"):
@@ -160,33 +160,40 @@ def play():
     # Record song if not in database
     if result == []:
 
+        # Check if user played new song
+        searched = db.execute("SELECT * FROM searches WHERE id = ?", id)
+        if searched == []:          # Song was neither in database nor in searches 
+            return apology("Song could not be found!")
+
         # Get basic details from searches
-        song = db.execute("SELECT * FROM searches WHERE id = ?", id)[0]
+        song = searched[0]
         db.execute("DELETE FROM searches")
 
-        # Get lyrics
+        # Download song in a unique id denoted folder 
+        song_folder = f"{STORAGE}\\{id}"
+        if song_folder not in os.listdir(STORAGE):
+            os.system(f"mkdir {song_folder}")
+            os.system(f'yt-dlp -o {song_folder}/%(title)s.%(ext)s https://www.youtube.com/watch?v={id}')
+
+        # Set song's path
+        song['path'] = f"{song_folder}\\{os.listdir(song_folder)[0]}"
+
+        # Record
+        db.execute("INSERT INTO songs(id, title, channel, thumbnail, path) VALUES (?, ?, ?, ?, ?)", 
+            song['id'], song['title'], song['channel'], song['thumbnail'], song['path']
+            )
+
+        # Embed lyrics inside song
         try:
-            lyrics = get_lyrics(song['title'])
+            lyrics = get_lyrics(song['title']).replace('\n\n', '\n')
         except Exception:
             lyrics = "Could not find lyrics"
 
-        # Download song
-        file = f"{id}.opus"
-        if file not in os.listdir(STORAGE):
-            os.system(f'yt-dlp https://www.youtube.com/watch?v={id}')
-
-        # Record
-        db.execute("INSERT INTO songs(id, title, channel, thumbnail, lyrics, file) VALUES (?, ?, ?, ?, ?, ?)", 
-            song['id'], song['title'], song['channel'], song['thumbnail'], lyrics, file
-            )
-
-        # Set lyrics and filepath
-        song['lyrics'] = lyrics.replace('\n\n', '\n')
-        song['file'] = f"{STORAGE}/{file}"
+        embed_lyrics(song['path'], lyrics)
 
     else:
         song = result[0]
-
+        lyrics = look_lyrics(song['path'])
 
     # Record song in recently played list
     try:
@@ -200,11 +207,13 @@ def play():
     song['prevSong'] = session['recents'][idx - 1] if idx > 0 else id
     song['nextSong'] = session['recents'][idx + 1] if idx < (len(session['recents']) - 1) else id
 
+    
     # See if song is favorite or not
     result = db.execute("SELECT * FROM favorites WHERE user_id = ? AND song_id = ?", session['user_id'], id)
     song['favorite'] = True if len(result) != 0 else False
 
-    song['lyrics'] = song['lyrics'].replace('\n', '<br>')
+    # Modify lyrics to render as html
+    song['lyrics'] = lyrics.replace('\n', '<br>')
 
     # Details shown in terminal for debugging issues
     print('\n')
@@ -217,10 +226,13 @@ def play():
 
 @app.route("/test")
 def test():
-
-    print(request.args.get("this"))
-    return render_template("test.html")
-
+    session.clear()
+    print()
+    print()
+    print("Session Cleared !!!")
+    print()
+    print()
+    return redirect("/")
 
 
 @app.route("/profile")
