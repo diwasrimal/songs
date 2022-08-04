@@ -1,7 +1,7 @@
 import innertube
-import json
 import os
 import re
+import music_tag
 
 from flask import redirect, render_template, request, session
 from functools import wraps
@@ -81,3 +81,13 @@ def login_required(f):
             return redirect("/login")
         return f(*args, **kwargs)
     return decorated_function
+
+def embed_lyrics(song, lyrics):
+	data = music_tag.load_file(song)
+	data['lyrics'] = lyrics
+	data.save()
+
+
+def look_lyrics(song):
+	data = music_tag.load_file(song)
+	return str(data['lyrics'])

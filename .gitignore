@@ -5,8 +5,7 @@ test.py
 info.json
 templates/test.html
 static/downloads/audio/*
-.sqliterc
 improvements.txt
-musictest/
 run.ps1
-test 
+test/
+pyrightconfig.json

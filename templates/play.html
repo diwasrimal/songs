@@ -20,7 +20,7 @@
   {% else %}
 
   <audio hidden preload="metadata">
-    <source src="/static/downloads/audio/{{ song.id }}.opus">
+    <source src="{{ song.path }}">
     <input hidden class="songId" value="{{ song.id }}">
   </audio>
 
@@ -32,7 +32,7 @@
       <!-- Downloads song if clicked -->
       <!-- <a download="{{ song.title }}.opus" href="/static/downloads/audio/{{ song.id }}" id="download-link"> -->
       <!-- <a download="{{ song.title }}.opus" href="../static/downloads/audio/{{ song.id }}.opus" id="download"> -->
-      <a download="{{ song.title }}.opus" href="/static/downloads/audio/{{ song.id }}.opus">
+      <a download="{{ song.title }}.opus" href="{{ song.path }}">
         <i class="fa fa-download"></i>
       </a>
 
@@ -92,10 +92,5 @@
   </div>
 
   {% endif %}
-
-{% endblock %}
-<!-- Main block end -->
-
-{% block script %}
 
 {% endblock %}

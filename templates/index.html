@@ -1,7 +1,18 @@
 {% extends "layout.html" %}
 
-{% block main %}
+{% block head %}
+    <link href="./static/css/searchBox.css" rel="stylesheet">
+{% endblock %}
 
-    <h1>Start Listening ...</h1>
+{% block main %}
+    
+    <!-- Search box -->
+    <div class="box-container">
+        <div><h1>Search Song</h1></div>
+        <form class="d-flex" role="search" action="/search" method="get">
+            <input autofocus class="form-control me-2" autocomplete="off" type="search" name="name" aria-label="Search">
+            <button class="btn btn-outline-primary" type="submit">Search</button>
+        </form>
+    </div>
 
 {% endblock %}
