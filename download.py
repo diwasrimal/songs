@@ -48,7 +48,7 @@ for song in songs:
     os.system(f"yt-dlp {output_template} https://www.youtube.com/watch?v={song['id']}")
 
     # Get recently downloaded song file in the directory
-    list_of_files = glob.glob(f'{path}/*.mp3') # * means all if need specific format then *.csv
+    list_of_files = glob.glob(f'{path}/*.mp3') 
     latest_file = max(list_of_files, key=os.path.getctime)
 
     # Add lyrics 

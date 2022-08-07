@@ -4,8 +4,11 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from cs50 import SQL
 import os
 
-from helpers import apology, login_required, search_song, get_lyrics, embed_lyrics, look_lyrics
+from helpers.tools  import apology, login_required, corrected_path
+from helpers.songs  import search_song
+from helpers.lyrics import get_lyrics, embed_lyrics, look_lyrics
 
+# Configure Flask application
 app = Flask(__name__)
 
 # Ensure templates are auto reloaded
@@ -19,8 +22,8 @@ Session(app)
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///music.db")
 
-# Dir where donwloaded songs are
-STORAGE = 'static\\downloads\\audio'
+# Downloaded songs go here (corrected_path returns platform specific path)
+STORAGE = corrected_path('static/downloads/audio')
 
 # Make sure GCS_ENGINE_ID is set
 if not os.environ.get("GCS_ENGINE_ID"):
@@ -157,33 +160,39 @@ def play():
     # Check if song is in database
     result = db.execute("SELECT * FROM songs WHERE id = ?", id)
 
-    # Record song if not in database
-    if result == []:
+    # Song is in database. Retrieve data from there
+    if result != []:
+        song = result[0]
+        lyrics = look_lyrics(song['path'])
+
+    # Song was not in database, make a new record 
+    else:
 
         # Check if user played new song
         searched = db.execute("SELECT * FROM searches WHERE id = ?", id)
-        if searched == []:          # Song was neither in database nor in searches 
+        if searched == []:          # Song was neither in database nor was searched by user
             return apology("Song could not be found!")
 
         # Get basic details from searches
         song = searched[0]
         db.execute("DELETE FROM searches")
 
-        # Download song in a unique id denoted folder 
-        song_folder = f"{STORAGE}\\{id}"
+         # Download song in a unique id denoted folder 
+        song_folder = corrected_path(f"{STORAGE}/{id}")
         if song_folder not in os.listdir(STORAGE):
             os.system(f"mkdir {song_folder}")
             os.system(f'yt-dlp -o {song_folder}/%(title)s.%(ext)s https://www.youtube.com/watch?v={id}')
 
         # Set song's path
-        song['path'] = f"{song_folder}\\{os.listdir(song_folder)[0]}"
+        song['path'] = corrected_path(f"{song_folder}/{os.listdir(song_folder)[0]}")
 
         # Record
-        db.execute("INSERT INTO songs(id, title, channel, thumbnail, path) VALUES (?, ?, ?, ?, ?)", 
+        db.execute(
+            "INSERT INTO songs(id, title, channel, thumbnail, path) VALUES (?, ?, ?, ?, ?)", 
             song['id'], song['title'], song['channel'], song['thumbnail'], song['path']
             )
 
-        # Embed lyrics inside song
+        # Embed lyrics inside song's metadata
         try:
             lyrics = get_lyrics(song['title']).replace('\n\n', '\n')
         except Exception:
@@ -191,9 +200,6 @@ def play():
 
         embed_lyrics(song['path'], lyrics)
 
-    else:
-        song = result[0]
-        lyrics = look_lyrics(song['path'])
 
     # Record song in recently played list
     try:
@@ -220,6 +226,10 @@ def play():
     for v in song.values():
         print(v)
     print('\n')
+
+    print()
+    print(request.base_url)
+    print() 
 
     return render_template("play.html", song=song)
 
