@@ -5,13 +5,17 @@ Since this is a Flask project. You must have python installed for this. Since I'
 
 You can just head over to [Python download page](https://www.python.org/downloads/)
 
+## sqlite3
+
+I've used `sqlite` as my database in this project. 
+
+You can head over to [sqlite downloads](https://www.sqlite.org/download.html) page and get the latest `sqlite3`.
+
+
 ## yt-dlp
 
 **yt-dlp** is a youtube-dl fork based on the now inactive youtube-dlc. It lets you download videos and audios from YouTube with a lot of flexibility. It is a very powerful tool.
 
-## sqlite3
-
-I've used sqlite3 as my database in this project. 
 
 ### Installation
 You can install `yt-dlp` binary executable from [here](https://pypi.org/project/yt-dlp/#installation):
@@ -104,8 +108,6 @@ pip install -r requirements.txt
 ## Database
 
 Instead of messing with `sqlalchemy`, I have used `sqlite3` in this project to handle my database. I wanted it to be simple easy, thus sqlite would be better for this.
-
-You can head over to [sqlite downloads](https://www.sqlite.org/download.html) page and get the latest `sqlite3`.
 
 To manage the database queries, I have used the 'cs50' python module. It covers up all the unnecessary low level implementations and gives you that abstraction.
 
@@ -225,6 +227,15 @@ extract_lyrics = SongLyrics(GCS_API_KEY, GCS_ENGINE_ID)
 data = extract_lyrics.get_lyrics("Shape of You")
 ```
 
+## Downloading
+
+All the audio files that are downloaded are stored inside `static/downloads/audio/`. Each song file has its own directory named by its id. 
+
+#### Downloading locally
+
+Note that I've also created a python file named `download.py` but have never imported or used it inside `app.py`. 
+
+If you ever want to just download the songs locally and quickly without ever running the web app, you can use this python program. Just run `python download.py` in your terminal and you'll be prompted for inputs. This is a command line program I created for me to download songs as quickly as possible. I guessed it could be helpful for others too, so I added this to github.
 
 # Running
 
