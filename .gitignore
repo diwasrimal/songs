@@ -1,11 +1,8 @@
 venv/
 __pycache__/
 flask_session/
-test.py
 info.json
-templates/test.html
-static/downloads/audio/*
+*test*
 improvements.txt
-run.ps1
-test/
+start.ps1
 pyrightconfig.json

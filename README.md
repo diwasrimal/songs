@@ -271,7 +271,7 @@ flask run
 
 Now rather than writing all those individual lines, you could do `./run.ps1` inside PowerShell
 
-### `run` for `Linux/macOS`
+### `run.sh` for `Linux/macOS`
 ```bash
 #!/bin/bash
 
@@ -287,11 +287,11 @@ export GCS_ENGINE_ID=your_id
 flask run
 ```
 
-You can use `./run` on your `bash` shell. If the permission is denied, you can allow running this script by changing the mode 
+You can use `./run.sh` on your `bash` shell. If the permission is denied, you can allow running this script by changing the mode 
 
-`chmod u+x run`
+`chmod u+x run.sh`
 
-`./run` will work now
+`./run.sh` will work now
 
 
 # Limitations/Improvements
