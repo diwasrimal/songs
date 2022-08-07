@@ -2,7 +2,9 @@ from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from cs50 import SQL
+from platform import system
 import os
+import time
 
 from helpers.tools  import apology, login_required, corrected_path
 from helpers.songs  import search_song
@@ -152,6 +154,8 @@ def search():
 @login_required
 def play():
 
+    start = time.time()
+
     # Get info in that song
     id = request.args.get('songId')
     if not id or id == '':
@@ -181,7 +185,10 @@ def play():
         song_folder = corrected_path(f"{STORAGE}/{id}")
         if song_folder not in os.listdir(STORAGE):
             os.system(f"mkdir {song_folder}")
-            os.system(f'yt-dlp -o {song_folder}/%(title)s.%(ext)s https://www.youtube.com/watch?v={id}')
+            if system() == "Windows":
+                os.system(f'yt-dlp -o {song_folder}/%(title)s.%(ext)s https://www.youtube.com/watch?v={id}')
+            else:
+                os.system(f'yt-dlp -o {song_folder}/%\(title\)s.%\(ext\)s https://www.youtube.com/watch?v={id}')
 
         # Set song's path
         song['path'] = corrected_path(f"{song_folder}/{os.listdir(song_folder)[0]}")
@@ -227,34 +234,25 @@ def play():
         print(v)
     print('\n')
 
+    end = time.time()
+
     print()
-    print(request.base_url)
+    print(f"loading took: {end - start}")
     print() 
 
     return render_template("play.html", song=song)
 
 
-@app.route("/test")
-def test():
-    session.clear()
-    print()
-    print()
-    print("Session Cleared !!!")
-    print()
-    print()
-    return redirect("/")
+# @app.route("/profile")
+# @login_required
+# def profile():
+#     return render_template("profile.html")
 
 
-@app.route("/profile")
-@login_required
-def profile():
-    return render_template("profile.html")
-
-
-""" Adds/Removes songs from favorites """
 @app.route("/favorites", methods=["GET", "POST"])
 @login_required
 def favorites():
+    """ Adds/Removes songs from favorites """
 
     # If requested to add/remove song from favorites
     if request.method == "POST":
