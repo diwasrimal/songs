@@ -1,4 +1,5 @@
 import innertube
+import yt_dlp
 
 # Searches for a song and gives back their ids, thumbnails ..
 def search_song(q):
@@ -36,3 +37,27 @@ def search_song(q):
     return data
 
 
+def download_song(path, song_id):
+
+    URL = f'https://www.youtube.com/watch?v={song_id}'
+
+    ydl_opts = {
+
+        # Audio download format
+        'format': 'm4a/bestaudio/best',
+
+        # Output template for downloaded song
+        'outtmpl': {
+            'default': f'{path}/%(title)s.%(ext)s',
+            'thumbnail': 'thumbnail'        # Embeds thumbnail
+        },
+
+         # ℹ️ See help(yt_dlp.postprocessor) for a list of available Postprocessors and their arguments
+        # 'postprocessors': [{  # Extract audio using ffmpeg
+        #     'key': 'FFmpegExtractAudio',
+        #     'preferredcodec': 'mp3',
+        # }]
+    }
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        error_code = ydl.download(URL)

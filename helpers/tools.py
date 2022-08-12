@@ -1,6 +1,7 @@
 from flask import redirect, render_template, session
 from functools import wraps
 from platform import system
+from time import time
 
 
 """Render message as an apology to user."""
@@ -33,10 +34,19 @@ def login_required(f):
 
 
 def corrected_path(path):
-    """Autocorrects filepaths based on running machine"""
+    """Autocorrects filepaths"""
     if system() == "Windows": 
         return path.replace('/', '\\') 
     return path
+
+def time_taken(f):
+    @wraps(f)
+    def inner(*args, **kwargs):
+        start = time()
+        ret = f(*args, **kwargs)
+        print(f"Time elapsed: {time() - start}\n")
+        return ret
+    return inner
 
 
 

@@ -8,8 +8,8 @@
  * NavBar styles 
 */
 .bg-custom {
-    background-image: linear-gradient(15deg, #BBDBBE 0%, #DEEBDD 100%);
-    /*background-image: linear-gradient(15deg, #D7E1EC 0%, #FFFFFF 100%);*/
+    background: linear-gradient(to right, #F5E3E6, #D9E4F5);
+    /*background: linear-gradient(to right,#E5BDF6, #D8DEDE);*/
 }
 
 
@@ -44,16 +44,23 @@
 
 
 body {
-    background: #DAD299;
     /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #B0DAB9, #DAD299);
+    background: #F5E3E6;
     /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #B0DAB9, #DAD299);
-    /*background: linear-gradient(to right, #D7E1EC, #FFFFFF);*/
+    background: -webkit-linear-gradient(to right, #F5E3E6, #D9E4F5);
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right, #F5E3E6, #D9E4F5);
 }
 
-#
+#nav-seperator {
+    height: 4px;
+    border-radius: 4px;
+    margin-top: -4px;
+    margin: auto;
+    width: 98%;
+    /*box-shadow: 2px 2px 20px ;*/
+}
+
 /* 
  * styles for song thumbnails shown after search
  * used in searched.html  

@@ -251,7 +251,7 @@ I'd encourage anybody to use a script rather than typing these lines every time 
 
 I've made two scripts. One for `Windows` and another for `Linux/macOS`. You instead could write it yourself. A quick google search would do the job.
 
-These scripts are included in the project directory. You can just edit your environment variables, and you'll be up and running.
+These scripts are included in the project directory. You can just edit your environment variables, and you'll be up and running. Be sure to make a virutal environment `venv` and install project requirements before running these scripts though.
 
 ### `run.ps1` for Windows PowerShell
 ```
