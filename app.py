@@ -2,12 +2,10 @@ from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from cs50 import SQL
-from platform import system
 import os
-import time
 
-from helpers.tools  import apology, login_required, corrected_path
-from helpers.songs  import search_song
+from helpers.tools  import apology, login_required, corrected_path, time_taken
+from helpers.songs  import search_song, download_song
 from helpers.lyrics import get_lyrics, embed_lyrics, look_lyrics
 
 # Configure Flask application
@@ -139,8 +137,16 @@ def register():
 @login_required
 def search():
 
+    # Delete previous searches
+    db.execute("DELETE FROM searches")
+
     name = request.args.get("name")
     songs = search_song(name)
+
+    # Flash error message if song not found!
+    if songs == []:
+        flash("No matching results!", "danger")
+        return redirect("/")
 
     # Temporarily store searches (will be used in /play)
     for song in songs:
@@ -152,9 +158,8 @@ def search():
 
 @app.route("/play")
 @login_required
+@time_taken
 def play():
-
-    start = time.time()
 
     # Get info in that song
     id = request.args.get('songId')
@@ -175,20 +180,16 @@ def play():
         # Check if user played new song
         searched = db.execute("SELECT * FROM searches WHERE id = ?", id)
         if searched == []:          # Song was neither in database nor was searched by user
-            return apology("Song could not be found!")
+            return apology("Song not found!")
 
         # Get basic details from searches
         song = searched[0]
-        db.execute("DELETE FROM searches")
 
          # Download song in a unique id denoted folder 
         song_folder = corrected_path(f"{STORAGE}/{id}")
         if song_folder not in os.listdir(STORAGE):
             os.system(f"mkdir {song_folder}")
-            if system() == "Windows":
-                os.system(f'yt-dlp -o {song_folder}/%(title)s.%(ext)s https://www.youtube.com/watch?v={id}')
-            else:
-                os.system(f'yt-dlp -o {song_folder}/%\(title\)s.%\(ext\)s https://www.youtube.com/watch?v={id}')
+            download_song(song_folder, id)
 
         # Set song's path
         song['path'] = corrected_path(f"{song_folder}/{os.listdir(song_folder)[0]}")
@@ -233,12 +234,6 @@ def play():
     for v in song.values():
         print(v)
     print('\n')
-
-    end = time.time()
-
-    print()
-    print(f"loading took: {end - start}")
-    print() 
 
     return render_template("play.html", song=song)
 

@@ -32,7 +32,7 @@
       <!-- Downloads song if clicked -->
       <!-- <a download="{{ song.title }}.opus" href="/static/downloads/audio/{{ song.id }}" id="download-link"> -->
       <!-- <a download="{{ song.title }}.opus" href="../static/downloads/audio/{{ song.id }}.opus" id="download"> -->
-      <a download="{{ song.title }}.opus" href="{{ song.path }}">
+      <a type="audio/m4a" download="{{ song.title }}.m4a" href="{{ song.path }}">
         <i class="fa fa-download"></i>
       </a>
 
