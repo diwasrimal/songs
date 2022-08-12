@@ -7,15 +7,15 @@ from lyrics_extractor import SongLyrics
 
 
 # Authentication used for lyrics extraction
-GCS_ENGINE_ID = os.environ.get("GCS_API_KEY")
-GCS_API_KEY = os.environ.get("GCS_ENGINE_ID")
+GCS_API_KEY = os.environ.get("GCS_API_KEY")
+GCS_ENGINE_ID = os.environ.get("GCS_ENGINE_ID")
 
 def get_lyrics(name):
 	"""Takes a song title, gives back its lyrics"""
 
 	print("Getting lyrics....")
 
-	extract_lyrics = SongLyrics(GCS_ENGINE_ID, GCS_API_KEY)
+	extract_lyrics = SongLyrics(GCS_API_KEY, GCS_ENGINE_ID)
 	lyrics = extract_lyrics.get_lyrics(name)['lyrics']
 
 	lyrics = ''.join(re.split("\[.*?\]", lyrics))
