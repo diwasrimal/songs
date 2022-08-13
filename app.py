@@ -230,10 +230,10 @@ def play():
     song['lyrics'] = lyrics.replace('\n', '<br>')
 
     # Details shown in terminal for debugging issues
-    print('\n')
-    for v in song.values():
-        print(v)
-    print('\n')
+    # print('\n')
+    # for v in song.values():
+    #     print(v)
+    # print('\n')
 
     return render_template("play.html", song=song)
 
