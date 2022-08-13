@@ -271,12 +271,12 @@ run `./scripts/configure.sh` inside the bash shell
 ```bash
 #!/bin/bash
 
-echo "creating a virutal env"
+echo "Creating a virutal env..."
 python3 -m venv venv
 
-.venv/bin/activate
+. venv/bin/activate
 
-echo "installing dependencies"
+echo "Installing dependencies..."
 pip install -r requirements.txt
 ```
 
@@ -294,7 +294,7 @@ Run `./scripts/run.ps1` inside Windows Powershell
 
 ```
 # Set up flask environemt
-./venv/Scripts/activate
+.\venv\Scripts\activate
 
 # Optional (For debugging)
 # $env:FLASK_ENV = "development"
