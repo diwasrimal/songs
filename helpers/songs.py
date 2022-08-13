@@ -49,7 +49,7 @@ def download_song(path, song_id):
         # Output template for downloaded song
         'outtmpl': {
             'default': f'{path}/%(title)s.%(ext)s',
-            'thumbnail': 'thumbnail'        # Embeds thumbnail
+            'thumbnail': 'thumbnail'        # Embeds thumbnail (Not working)
         },
 
          # ℹ️ See help(yt_dlp.postprocessor) for a list of available Postprocessors and their arguments

@@ -24,15 +24,15 @@ def get_lyrics(name):
 	return lyrics
 
 
-# Embeds lyrics to song's metadata
 def embed_lyrics(song, lyrics):
+	"""Embeds lyrics to song's metadata"""
 	data = music_tag.load_file(song)
 	data['lyrics'] = lyrics
 	data.save()
 
 
-# Look embedded lyrics inside a song
 def look_lyrics(song):
+	""" Look embedded lyrics inside a song """
 	data = music_tag.load_file(song)
 	return str(data['lyrics'])
 
