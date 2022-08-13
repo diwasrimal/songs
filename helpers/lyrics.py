@@ -1,10 +1,7 @@
-import music_tag
-import re
-import os
-import time
-
 from lyrics_extractor import SongLyrics
-
+import music_tag
+import os
+import re
 
 # Authentication used for lyrics extraction
 GCS_API_KEY = os.environ.get("GCS_API_KEY")
@@ -32,7 +29,7 @@ def embed_lyrics(song, lyrics):
 
 
 def look_lyrics(song):
-	""" Look embedded lyrics inside a song """
+	""" Looks embedded lyrics inside a song """
 	data = music_tag.load_file(song)
 	return str(data['lyrics'])
 
