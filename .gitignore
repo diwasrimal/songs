@@ -1,6 +1,7 @@
 venv/
 __pycache__/
 flask_session/
+async-test/
 info.json
 *test*
 improvements.txt

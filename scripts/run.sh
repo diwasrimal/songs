@@ -2,7 +2,9 @@
 
 # Setup environment
 . venv/bin/activate
-export FLASK_ENV=development
+
+# Optional (For debugging)
+# export FLASK_ENV=development
 
 # Set enviroment variables
 export GCS_API_KEY=your_key

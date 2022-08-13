@@ -61,49 +61,14 @@ Here in this project, we use ffmpeg to convert files downloaded using `yt-dlp` i
 Be sure to add `ffmpeg` to your path. Try executing `ffmpeg` command from your command line. Make sure it works
 
 
-# Configuration
-
-## Making a config file for yt-dlp
-
-We have to make a config file for yt-dlp that works specifically for this project. The file is named `yt-dlp.conf` and it directs the `yt-dlp` downloader how to download and convert music files
-
-## Configure Flask
-
-### Set up a virtual environment
-#### macOS/Linux
-```bash
-cd Songs
-python3 -m venv venv
-```
-#### Windows
-```cmd
-cd Songs
-python -m venv venv
-```
-### Run Scripts
-
-#### macOS/Linux
-```bash
-. venv/bin/activate
-```
-#### Windows
-```cmd
-venv\Scripts\activate
-
-```
-
-
-### Install Flask
-```bash
-pip install Flask
-```
-
-### Install project requirements
-```bash
-pip install -r requirements.txt
-```
 
 # Working
+
+## `yt-dlp.conf`
+
+We have to make a config file for yt-dlp that works specifically for this project. The file is named `yt-dlp.conf` and it directs the `yt-dlp` downloader how to download and convert music files.
+
+Note that we'll only used `yt-dlp` executable for downloading songs locally. While running the web app, songs will be downloaded via `yt_dlp` python library.
 
 ## Database
 
@@ -198,24 +163,7 @@ Add any of the following or all websites as per your choice in your Custom Searc
 Get your API key here: https://developers.google.com/custom-search/v1/overview
 
 
-### Setup API key and engine ID
-#### macOS/Linux
-```Bash
-export GCS_API_KEY=your_key
-export GCS_ENGINE_ID=your_id
-```
 
-#### Windows (cmd)
-```cmd
-set GCS_API_KEY=your_key
-set GCS_ENGINE_ID=your_id
-```
-
-#### Windows (PowerShell)
-```powershell
-$env:GCS_ENGINE_ID = "your_id"
-$env:GCS_API_KEY = "your_key"
-```
 
 ### How to use
 ```Py
@@ -237,7 +185,57 @@ Note that I've also created a python file named `download.py` but have never imp
 
 If you ever want to just download the songs locally and quickly without ever running the web app, you can use this python program. Just run `python download.py` in your terminal and you'll be prompted for inputs. This is a command line program I created for me to download songs as quickly as possible. I guessed it could be helpful for others too, so I added this to github.
 
-# Running
+# Configure and Run
+
+Run the following scripts to configure your environment
+
+### Make venv and install dependencies
+
+- #### Windows users
+
+```PS
+python -m venv venv
+
+.\venv\Scripts\activate
+
+pip install -r requirements.txt
+```
+
+- #### Linux/macOS users
+
+```bash
+python3 -m venv venv
+
+. venv/bin/activate
+
+pip install -r requirements.txt
+```
+
+## Fetching lyrics
+
+Notice that you'll need a google custom programmable search engine to fetch lyrics using the `lyrics-extractor` module. Have a look [above](https://github.com/diwasrimal/Songs#getting-lyrics).
+
+### Setup API key and engine ID
+
+- #### Windows (PowerShell)
+```powershell
+$env:GCS_API_KEY = "your_key"
+$env:GCS_ENGINE_ID = "your_id"
+```
+
+- #### Windows (cmd)
+```cmd
+set GCS_API_KEY=your_key
+set GCS_ENGINE_ID=your_id
+```
+
+- #### macOS/Linux
+```Bash
+export GCS_API_KEY=your_key
+export GCS_ENGINE_ID=your_id
+```
+
+## Run
 
 After you activate your scripts, enter virtual environment and set up environment variables (api keys), you can just run the server by hitting 
 
@@ -249,15 +247,57 @@ flask run
 
 I'd encourage anybody to use a script rather than typing these lines every time you run the application.
 
-I've made two scripts. One for `Windows` and another for `Linux/macOS`. You instead could write it yourself. A quick google search would do the job.
+I've made a couple of scripts inside the `scripts/` directory. I've included PowerShell `.ps1` and Bash `.sh` scripts. 
 
-These scripts are included in the project directory. You can just edit your environment variables, and you'll be up and running. Be sure to make a virutal environment `venv` and install project requirements before running these scripts though.
+### Configure script
 
-### `run.ps1` for Windows PowerShell
+- #### Windows users
+
+Run `./scripts/configure.ps1` inside Windows PowerShell
+
+```PS
+# Create a virutal environment
+python -m venv venv
+
+.\venv\Scripts\activate
+
+# installing project dependencies
+pip install -r requirements.txt
+```
+
+- #### Linux/macOS users
+
+run `./scripts/configure.sh` inside the bash shell
+```bash
+#!/bin/bash
+
+echo "creating a virutal env"
+python3 -m venv venv
+
+.venv/bin/activate
+
+echo "installing dependencies"
+pip install -r requirements.txt
+```
+
+Note: If you see something like `permission denied.`, just change the file mode and make it runnable. 
+
+`chmod u+x ./scripts/configure.sh` and then `./scripts/run.sh`
+
+### Runner scripts
+
+Be sure to edit your environment variables before running these scripts. Replace the `your_key` and `your_id` with appropriate values.
+
+- #### Windows users
+
+Run `./scripts/run.ps1` inside Windows Powershell
+
 ```
 # Set up flask environemt
 ./venv/Scripts/activate
-$env:FLASK_ENV = "development"
+
+# Optional (For debugging)
+# $env:FLASK_ENV = "development"
 
 # Set Search engine ID:
 $env:GCS_ENGINE_ID = "your_id"
@@ -269,15 +309,18 @@ $env:GCS_API_KEY = "your_key"
 flask run
 ```
 
-Now rather than writing all those individual lines, you could do `./run.ps1` inside PowerShell
+- #### Linux/macOS users
 
-### `run.sh` for `Linux/macOS`
+run `./scripts/run.sh` inside your bash shell
+
 ```bash
 #!/bin/bash
 
 # Setup environment
 . venv/bin/activate
-export FLASK_ENV=development
+
+# Optional (For debugging)
+# export FLASK_ENV=development
 
 # Set enviroment variables
 export GCS_API_KEY=your_key
@@ -286,12 +329,6 @@ export GCS_ENGINE_ID=your_id
 # Run the server
 flask run
 ```
-
-You can use `./run.sh` on your `bash` shell. If the permission is denied, you can allow running this script by changing the mode 
-
-`chmod u+x run.sh`
-
-`./run.sh` will work now
 
 
 # Limitations/Improvements
