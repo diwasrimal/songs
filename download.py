@@ -2,7 +2,8 @@ import glob
 import music_tag
 import os
 
-from helpers import search_song, get_lyrics
+from helpers.songs import search_song
+from helpers.lyrics import get_lyrics
 
 songs = []
 
@@ -54,12 +55,12 @@ for song in songs:
     # Add lyrics 
     try:
         lyrics = get_lyrics(song['title'])
-        data = music_tag.load_file(latest_file)
-        data['lyrics'] = lyrics
-        data.save()        
-        
-    except LyricScraperException:
+    except Exception:
         print("Lyrics not found!")
         continue
+
+    data = music_tag.load_file(latest_file)
+    data['lyrics'] = lyrics
+    data.save()        
 
 

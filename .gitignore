@@ -4,7 +4,6 @@ flask_session/
 async-test/
 info.json
 *test*
-improvements.txt
 start.ps1
 pyrightconfig.json
 Procfile
