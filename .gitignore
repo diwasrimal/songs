@@ -7,3 +7,4 @@ info.json
 start.ps1
 pyrightconfig.json
 Procfile
+.download_cache
