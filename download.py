@@ -63,7 +63,7 @@ def main():
         try:
             # Write metadata
             data = music_tag.load_file(f"{CACHE}/{file}")
-            song_title, artist = get_artist_title(title)
+            artist, song_title = get_artist_title(title)
             data['tracktitle'] = song_title
             data['artist'] = artist
             data.save()
