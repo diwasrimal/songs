@@ -6,7 +6,7 @@ from platform import system
 from youtube_title_parse import get_artist_title
 from helpers.songs import search_song
 
-CACHE = ".downlaod_cache"
+CACHE = ".download_cache"
 
 def main():
 
@@ -41,36 +41,40 @@ def main():
         sys.exit("No songs specified.")
 
     # Prompt for a saving path
-    path = input("Download path (default '~/Music/'): ") or '~/Music'
+    path = os.path.expanduser(input("Download path (default '~/Music/'): ") or '~/Music')
     if path.endswith('/'):
         path = path[:-1]
 
     # Download collected or given songs
     download_songs(song_ids)
 
-    # Modify metadata of downloaded songs
+    # Make dir to store downloaded songs
+    if not os.path.exists(path) or not os.path.isdir(path):
+        os.mkdir(path)
+
+    # Modify metadata, rename and move the song
+    print("Moving files..")
     song_files = os.listdir(CACHE)
     for file in song_files:
 
-        # Get artist name and song_title from song_filename
         title, ext = ''.join(file.split('.')[:-1]), file.split('.')[-1]
-        artist, song_title = get_artist_title(title)   # Parsing artist and song_title from youtube video title
 
-        # Write metadata information
-        data = music_tag.load_file(f"{CACHE}/{file}")
-        data['tracktitle'] = song_title
-        data['artist'] = artist
-        data.save()
+        song_title = ""
+        try:
+            # Write metadata
+            data = music_tag.load_file(f"{CACHE}/{file}")
+            song_title, artist = get_artist_title(title)
+            data['tracktitle'] = song_title
+            data['artist'] = artist
+            data.save()
+        except Exception as e:
+            print(f"{e} while parsing {file}, skipping...")
+            pass
 
-        # Rename the file itself
-        new_file = f"{song_title}.{ext}"
-        if file != new_file:
-            os.system(f"cd {CACHE}; mv '{file}' '{new_file}'")
+        # Move the file
+        new_file = f"{song_title}.{ext}" if song_title else file
+        os.rename(f"{CACHE}/{file}", f"{path}/{new_file}")
 
-    # Move songs to given path
-    print("Moving songs to given path..")
-    os.system(f"mv {CACHE}/* {path}/ ; rmdir {CACHE}")
-    
 
 def collect_songs():
 
