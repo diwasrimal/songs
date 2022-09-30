@@ -11,8 +11,8 @@ CACHE = ".download_cache"
 def main():
 
     usage = ('''Usage:
-    python download.py -i      (Interactive download) 
-    python download.py -q      (Quick download)
+    python download.py -q song1 song2 ...   (Quick download)
+    python download.py -i                   (Interactive download) 
     ''')
     if len(sys.argv) < 2:
         sys.exit(usage)
