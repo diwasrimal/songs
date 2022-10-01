@@ -5,6 +5,7 @@ async-test/
 info.json
 *test*
 start.ps1
+start.sh
 pyrightconfig.json
 Procfile
 .download_cache

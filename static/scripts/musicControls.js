@@ -8,13 +8,33 @@ let repeat = document.querySelector('.fa-repeat')
 let next = document.querySelector('.fa-fast-forward')
 
 // Controls
+window.addEventListener('keydown', (e) => {
+  if (e.keyCode == 32) {
+    if (audio.paused) {
+      audio.play()
+      hide(pause)
+      show(play)
+    } else {
+      audio.pause()
+      hide(play)
+      show(pause)
+    }
+  }
+})
 
 play.addEventListener('click', () => {
   audio.play()
   hide(play)
   show(pause)
 })
-
+audio.onpause = () => {
+  hide(pause)
+  show(play)
+}
+audio.onplay = () => {
+  hide(play)
+  show(pause)
+}
 pause.addEventListener('click', () => {
   audio.pause()
   hide(pause)
