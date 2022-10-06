@@ -52,11 +52,11 @@ def download_song(path, song_id):
             'thumbnail': 'thumbnail'        # Embeds thumbnail (Not working)
         },
 
-         # ℹ️ See help(yt_dlp.postprocessor) for a list of available Postprocessors and their arguments
-        # 'postprocessors': [{  # Extract audio using ffmpeg
-        #     'key': 'FFmpegExtractAudio',
-        #     'preferredcodec': 'mp3',
-        # }]
+        # Extract audio to mp3 format using ffmpeg
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+        }]
     }
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:

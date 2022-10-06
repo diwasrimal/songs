@@ -125,20 +125,24 @@ Embedding lyrics inside a song is as simple as:
 ```py
 import music_tag
 
-def embed_lyrics(song="path/to/song", lyrics="Twinkle Twinkle little star..."):
-    data = music_tag.load_file("path/to/song")
+def embed_lyrics(song_file, lyrics):
+    data = music_tag.load_file(song_file)
     data['lyrics'] = lyrics
     data.save()
 
+embed_lyrics("~/Music/Twinkle.mp3", "Twinkle Twinkle Little Star, How I wonder what you are?")
+
 ```
 
-Looking embedded lyrics is much more easy
+Looking at the embedded lyrics is much more easy
 ```py
 import music_tag
 
-def look_lyrics(song="path/to/song"):
-    data = music_tag.load_file(song)
+def look_lyrics(song_file):
+    data = music_tag.load_file(song_file)
     return str(data['lyrics'])
+
+lyrics = look_lyrics("~/Music/Twinkle.mp3")
 
 ```
 
