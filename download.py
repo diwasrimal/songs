@@ -4,6 +4,7 @@ import music_tag
 
 from platform import system
 from youtube_title_parse import get_artist_title
+from colorama import Fore, Style
 from helpers.songs import search_song
 
 CACHE = ".download_cache"
@@ -22,13 +23,20 @@ def main():
 
     # Quick download
     if sys.argv[1] == '-q':
+
+        # Exit if no songs given
         songs = sys.argv[2:]
+        if not songs:
+            warn("No songs specified!")
+            sys.exit()
+
+        print("Searching...")
         for song in songs:
             result = search_song(song)
             try:
                 song_ids.append(result[0]['id'])
             except IndexError:
-                print(f"{song} not found, try again!")
+                warn(f"'{song}' not found, try again!")
                 continue
 
     # Step by Step (Inteactive) download
@@ -38,7 +46,7 @@ def main():
         sys.exit(usage)
 
     if not song_ids:
-        sys.exit("No songs specified.")
+        sys.exit("Nothing to download!")
 
     # Prompt for a saving path
     path = os.path.expanduser(input("Download path (default '~/Music/'): ") or '~/Music')
@@ -74,6 +82,8 @@ def main():
         # Move the file
         new_file = f"{song_title}.{ext}" if song_title else file
         os.rename(f"{CACHE}/{file}", f"{path}/{new_file}")
+
+    print(f"{Fore.GREEN}Done!{Style.RESET_ALL}")
 
 
 def collect_songs():
@@ -116,6 +126,9 @@ def download_songs(song_ids):
     for id in song_ids:
         os.system(f"yt-dlp {output_template} https://www.youtube.com/watch?v={id}")
         print()
+
+def warn(text):
+    print(f"{Fore.RED}{text}{Style.RESET_ALL}")
 
 
 if __name__ == "__main__":
