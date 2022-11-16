@@ -1,6 +1,7 @@
 import os
 import sys
 import music_tag
+import re
 
 from platform import system
 from youtube_title_parse import get_artist_title
@@ -12,36 +13,47 @@ CACHE = ".download_cache"
 def main():
 
     usage = ('''Usage:
-    python download.py -q song1 song2 ...   (Quick download)
-    python download.py -i                   (Interactive download) 
+    python download.py -q song1 song2 youtube-link ... (Quick download)
+    python download.py -i                              (Interactive download) 
     ''')
     if len(sys.argv) < 2:
         sys.exit(usage)
 
     # Songs to download
     song_ids = []
+    songs_not_found = []
+    songs_queried = 0
 
     # Quick download
     if sys.argv[1] == '-q':
 
         # Exit if no songs given
         songs = sys.argv[2:]
+        songs_queried = len(songs)
         if not songs:
             warn("No songs specified!")
             sys.exit()
 
         print("Searching...")
         for song in songs:
+
+            # A youtube link can also be given
+            if matches := re.search(r'^https://(?:www\.)?youtu\.?be(?:\.com)?/(?:watch\?v=)?(.*)', song):
+                song_ids.append(matches.group(1))
+                continue
+
             result = search_song(song)
             try:
                 song_ids.append(result[0]['id'])
             except IndexError:
-                warn(f"'{song}' not found, try again!")
+                print(f"'{song}' not found!")
+                songs_not_found.append(song)
                 continue
 
-    # Step by Step (Inteactive) download
+    # Step by Step (Interactive) download
     elif sys.argv[1] == '-i':
         song_ids = collect_songs()
+        songs_queried = len(song_ids)
     else:
         sys.exit(usage)
 
@@ -61,7 +73,7 @@ def main():
         os.mkdir(path)
 
     # Modify metadata, rename and move the song
-    print("Moving files..")
+    print("Moving files to destination..")
     song_files = os.listdir(CACHE)
     for file in song_files:
 
@@ -76,16 +88,25 @@ def main():
             data['artist'] = artist
             data.save()
         except Exception as e:
-            print(f"{e} while parsing {file}, skipping...")
+            # print(f"{e} while parsing {file}, skipping...")
+            print(f"Error parsing metadata for {file}, skipping..")
             pass
 
         # Move the file
         new_file = f"{song_title}.{ext}" if song_title else file
         os.rename(f"{CACHE}/{file}", f"{path}/{new_file}")
 
-    print(f"{Fore.GREEN}Done!{Style.RESET_ALL}")
+    # Show songs not found while quick downloading
+    failed_songs = len(songs_not_found)
+    if failed_songs > 0:
+        warn(f"\nFailed downloads")
+        for song_not_found in songs_not_found:
+            print(song_not_found)
 
+    # Show download status
+    print(f"\n{songs_queried} song(s) queried, {songs_queried - failed_songs} downloaded, {failed_songs} failed.")
 
+"""Collect Songs one by one"""
 def collect_songs():
 
     ids = []
@@ -95,6 +116,12 @@ def collect_songs():
         query = input(">> ")
         if query == 'd':
             break
+
+        # A youtube link can also be given
+        if matches := re.search(r'^https://(?:www\.)?youtu\.?be(?:\.com)?/(?:watch\?v=)?(.*)', query):
+            ids.append(matches.group(1))
+            print("Added")
+            continue
 
         results = search_song(query)
         if not results:
@@ -115,6 +142,7 @@ def collect_songs():
     return ids
 
 
+"""Download songs using yt-dlp"""
 def download_songs(song_ids):
 
     # Download songs in a cache folder
@@ -127,6 +155,8 @@ def download_songs(song_ids):
         os.system(f"yt-dlp {output_template} https://www.youtube.com/watch?v={id}")
         print()
 
+
+"""Display a warning message"""
 def warn(text):
     print(f"{Fore.RED}{text}{Style.RESET_ALL}")
 
