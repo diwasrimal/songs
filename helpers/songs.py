@@ -17,7 +17,7 @@ def search_song(q):
         try:
             videoContent = contents[i]["videoRenderer"]
         except KeyError:
-            break
+            continue
 
         thumbnail = videoContent["thumbnail"]["thumbnails"]
         data.append(
