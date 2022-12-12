@@ -1,6 +1,16 @@
 import innertube
 import yt_dlp
 
+
+def parse_view(d):
+    views = ''
+    for c in d['views']:
+        if c.isnumeric():
+            views += c
+
+    return int(views)
+
+
 # Searches for a song and gives back their ids, thumbnails ..
 def search_song(q):
     client = innertube.InnerTube("WEB")
@@ -23,18 +33,17 @@ def search_song(q):
         data.append(
             {
                 "id": videoContent["videoId"],
-                # 'thumbnail': {
-                # 	'url': thumbnail[0]['url'],
-                # 	'width': thumbnail[0]['width'],
-                # 	'height': thumbnail[0]['height']
-                # },
+                "views": videoContent["viewCountText"]["simpleText"],
                 "thumbnail": thumbnail[0]["url"],
                 "title": videoContent["title"]["runs"][0]["text"],
                 "channel": videoContent["ownerText"]["runs"][0]["text"],
             }
         )
 
-    return data
+    # Sort results by views
+    sorted_data = sorted(data, key=parse_view, reverse=True)
+
+    return sorted_data
 
 
 def download_song(path, song_id):
