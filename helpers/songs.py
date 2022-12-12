@@ -62,10 +62,10 @@ def download_song(path, song_id):
         },
 
         # Extract audio to mp3 format using ffmpeg
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-        }]
+        # 'postprocessors': [{
+        #     'key': 'FFmpegExtractAudio',
+        #     'preferredcodec': 'mp3',
+        # }]
     }
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:

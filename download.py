@@ -61,7 +61,9 @@ def main():
         sys.exit("Nothing to download!")
 
     # Prompt for a saving path
-    path = os.path.expanduser(input("Download path (default '~/Music/'): ") or '~/Music')
+    path = os.path.expanduser(
+            input("Download path (default '$XDG_MUSIC_DIR'  or '~/Music'): ")
+            or os.getenv("XDG_MUSIC_DIR") or "~/Music")
     if path.endswith('/'):
         path = path[:-1]
 
