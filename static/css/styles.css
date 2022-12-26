@@ -2,13 +2,16 @@
 
 * {
     font-family: Roboto;
+    font-weight: bold;
 }
 
 /* 
  * NavBar styles 
 */
 .bg-custom {
-    background: linear-gradient(to right, #F5E3E6, #D9E4F5);
+  background: #0b1017;
+  box-shadow: 0px 0px 0px 1px #8B949D;
+    /* background: linear-gradient(to right, #F5E3E6, #D9E4F5); */
     /*background: linear-gradient(to right,#E5BDF6, #D8DEDE);*/
 }
 
@@ -39,17 +42,23 @@
 }
 
 .nav-link {
-	color: black;
+	color: white!important;
+  font-size: large;
 }
+
+/* Styles for flashed messages */
+.alert {
+  background: #2F3039;
+  border: none;
+}
+
+.alert-danger  { color: #BF616A; }
+.alert-success { color: #29893C; }
 
 
 body {
-    /* fallback for old browsers */
-    background: #F5E3E6;
-    /* Chrome 10-25, Safari 5.1-6 */
-    background: -webkit-linear-gradient(to right, #F5E3E6, #D9E4F5);
-    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    background: linear-gradient(to right, #F5E3E6, #D9E4F5);
+    background: #0D1117;
+    color: white;
 }
 
 #nav-seperator {
@@ -68,6 +77,12 @@ body {
 
 * {
     transition: box-shadow 0.2s;
+}
+
+.thumbnailCard {
+  width: 20rem;
+  height: 100%;
+  border: 2px solid #30363D;
 }
 
 .thumbnailCard:active {

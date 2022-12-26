@@ -23,8 +23,8 @@
                 <span><img src="../static/images/titleIcon.png"></span>
                 <span id="gradientTitle">Songs</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler" style="color: white;" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <img src="../static/images/menu.png" style="width: 24px">
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 {% if session['user_id'] %}
@@ -49,7 +49,7 @@
         </div>
     </nav>
 
-    <hr id="nav-seperator">
+    <!-- <hr id="nav-seperator"> -->
 
     <!-- Flashed messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}

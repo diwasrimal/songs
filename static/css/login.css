@@ -1,0 +1,19 @@
+#input-form input {
+  min-width: 260px !important;
+  max-width: 80%;
+  color: white;
+  background-color: #2A3248;
+  opacity: 0.5;
+  font-weight: bold;
+  font-size: large;
+}
+
+#input-form input:focus {
+  color: white;
+  background-color: #2A3248;
+  box-shadow: 0 0 0 2px #FAA289;
+}
+
+#input-form input:hover {
+  box-shadow: 0 0 0 2px #FAA289;
+}

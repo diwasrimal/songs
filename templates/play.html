@@ -30,8 +30,6 @@
       <i class="fa fa-bars" id="lyrics-shower"></i>
 
       <!-- Downloads song if clicked -->
-      <!-- <a download="{{ song.title }}.opus" href="/static/downloads/audio/{{ song.id }}" id="download-link"> -->
-      <!-- <a download="{{ song.title }}.opus" href="../static/downloads/audio/{{ song.id }}.opus" id="download"> -->
       <a type="audio/m4a" download="{{ song.title }}.m4a" href="{{ song.path }}">
         <i class="fa fa-download"></i>
       </a>

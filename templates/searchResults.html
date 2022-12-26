@@ -7,9 +7,9 @@
     {% for song in songs %}
 
       <form class="searchResult" action="/play" method="get">
-        <div class="card thumbnailCard" style="width: 20rem; height: 100%">
+        <div class="card thumbnailCard">
           <img src="{{ song.thumbnail }}" class="card-img-top" alt="...">
-          <div class="card-body">
+          <div class="card-body" style="background: #161B22;">
             <h5 class="card-title">{{ song.title }}</h5>
             <p class="card-text">{{ song.channel }}</p>
           </div>

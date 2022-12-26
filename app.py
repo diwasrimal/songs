@@ -130,7 +130,7 @@ def register():
         db.execute("INSERT INTO users(username, hash) VALUES(?, ?)", username, hash)
 
         # Redirect to index page
-        flash("Registered!", "primary")
+        flash("Registered!", "success")
         return redirect("/")
 
 
