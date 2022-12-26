@@ -33,17 +33,18 @@ def search_song(q):
         data.append(
             {
                 "id": videoContent["videoId"],
-                "views": videoContent["viewCountText"]["simpleText"],
+                # "views": videoContent["viewCountText"]["simpleText"],
                 "thumbnail": thumbnail[0]["url"],
                 "title": videoContent["title"]["runs"][0]["text"],
                 "channel": videoContent["ownerText"]["runs"][0]["text"],
             }
         )
 
-    # Sort results by views
-    sorted_data = sorted(data, key=parse_view, reverse=True)
+    # Sort results by views (may lower the position of actual queried song)
+    # matching title and views
+    # data = sorted(data, key=parse_view, reverse=True)
 
-    return sorted_data
+    return data
 
 
 def download_song(path, song_id):
