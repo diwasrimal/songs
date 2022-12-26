@@ -188,10 +188,7 @@ $
 
 ### What to improve ?
 
-- Song download and lyrics fetching could get faster while opening `/play` route
-
-I tried this a lot, but I couldn't figure out a way to make these two processes concurrent. Since I'm using a library for fetching lyrics, this was a little complicated. I will complete this in the near future, but I am leaving this as it is right now.
-
+- Faster downloads?, I'm not sure.
 - A page to show user's profile could be made
 
 ## Contributing

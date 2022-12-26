@@ -1,6 +1,7 @@
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
+from threading import Thread
 from cs50 import SQL
 import os
 
@@ -185,7 +186,22 @@ def play():
         # Get basic details from searches
         song = searched[0]
 
-         # Download song in a unique id denoted folder 
+        # Use threading for concurrent lyrics fetching and download.
+        # Create a List to store the lyrics while the thread runs.
+        # And access the list after the song gets downloaded.
+        # That way we'll have more than enough time to get lyrics
+        lyrics_list = []
+        def get_lyrics_thread_target():
+            try:
+                lyrics = get_lyrics(song['title']).replace('\n\n', '\n')
+            except Exception:
+                lyrics = "Could not find lyrics"
+            lyrics_list.append(lyrics)
+        
+        # Start the thread
+        Thread(target=get_lyrics_thread_target).start()
+
+        # Download song in a unique id denoted folder 
         song_folder = corrected_path(f"{STORAGE}/{id}")
         if song_folder not in os.listdir(STORAGE):
             os.system(f"mkdir {song_folder}")
@@ -201,11 +217,7 @@ def play():
             )
 
         # Embed lyrics inside song's metadata
-        try:
-            lyrics = get_lyrics(song['title']).replace('\n\n', '\n')
-        except Exception:
-            lyrics = "Could not find lyrics"
-
+        lyrics = lyrics_list[0]
         embed_lyrics(song['path'], lyrics)
 
 
