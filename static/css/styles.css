@@ -76,7 +76,7 @@ body {
 */
 
 * {
-    transition: box-shadow 0.2s;
+    transition: box-shadow 0.15s;
 }
 
 .thumbnailCard {
@@ -90,7 +90,7 @@ body {
 }
 
 .thumbnailCard:hover {
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+    box-shadow: 2px 2px 5px rgba(255, 255, 255, 0.4);
     cursor: pointer;
 }
 
