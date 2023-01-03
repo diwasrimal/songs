@@ -44,7 +44,7 @@ def time_taken(f):
     def inner(*args, **kwargs):
         start = time()
         ret = f(*args, **kwargs)
-        print(f"Time elapsed: {time() - start}\n")
+        print(f"⏰ Time elapsed: {time() - start}\n")
         return ret
     return inner
 

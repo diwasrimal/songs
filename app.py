@@ -196,10 +196,12 @@ def play():
                 lyrics = get_lyrics(song['title']).replace('\n\n', '\n')
             except Exception:
                 lyrics = "Could not find lyrics"
+            print("📚 Adding lyrics to lyrics_list")
             lyrics_list.append(lyrics)
         
         # Start the thread
-        Thread(target=get_lyrics_thread_target).start()
+        lyrics_thread = Thread(target=get_lyrics_thread_target)
+        lyrics_thread.start()
 
         # Download song in a unique id denoted folder 
         song_folder = corrected_path(f"{STORAGE}/{id}")
@@ -216,7 +218,9 @@ def play():
             song['id'], song['title'], song['channel'], song['thumbnail'], song['path']
             )
 
-        # Embed lyrics inside song's metadata
+        # Ensure that the lyrics thread completes.
+        # Then embed lyrics inside song's metadata
+        lyrics_thread.join()
         lyrics = lyrics_list[0]
         embed_lyrics(song['path'], lyrics)
 
