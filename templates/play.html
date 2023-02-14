@@ -19,7 +19,7 @@
 
   {% else %}
 
-  <audio hidden preload="metadata">
+  <audio loop hidden preload="metadata">
     <source src="{{ song.path }}">
     <input hidden class="songId" value="{{ song.id }}">
   </audio>
