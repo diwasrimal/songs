@@ -14,6 +14,12 @@ else {
   });
 }
 
+// Seek 5 seconds forward/backward with arrows
+window.addEventListener('keydown', e => {
+  if (e.keyCode == 39) audio.currentTime += 5;
+  if (e.keyCode == 37) audio.currentTime -= 5;
+})
+
 // Show current time and progress
 
 const time = document.querySelector("#currentTime")
