@@ -51,21 +51,24 @@ def login():
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
+        username = request.form.get("username").strip()
+        password = request.form.get("password")
+
         # Ensure username was submitted
-        if not request.form.get("username"):
+        if not username:
             flash("Must provide username", "danger")
             return redirect("/login")
 
         # Ensure password was submitted
-        if not request.form.get("password"):
+        if not password:
             flash("Must provide password", "danger")
             return redirect("/login")
 
         # Query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
+        rows = db.execute("SELECT * FROM users WHERE username = ?", username)
 
         # Ensure username exists and password is correct
-        if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
+        if len(rows) != 1 or not check_password_hash(rows[0]["hash"], password):
             flash("Invalid username or password", "danger")
             return redirect("/login")
 
@@ -100,7 +103,7 @@ def register():
     if request.method == "POST":
 
         # Get user info
-        username = request.form.get("username")
+        username = request.form.get("username").strip()
         password = request.form.get("password")
         confirmation = request.form.get("confirmation")
 
@@ -130,7 +133,7 @@ def register():
         db.execute("INSERT INTO users(username, hash) VALUES(?, ?)", username, hash)
 
         # Redirect to index page
-        flash("Registered!", "success")
+        flash(f'"{username}" registered!', "success")
         return redirect("/")
 
 
