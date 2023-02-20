@@ -51,8 +51,8 @@ def login():
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
-        username = request.form.get("username").strip()
-        password = request.form.get("password")
+        username = request.form.get("username", default="").strip()
+        password = request.form.get("password", default="")
 
         # Ensure username was submitted
         if not username:
@@ -103,9 +103,9 @@ def register():
     if request.method == "POST":
 
         # Get user info
-        username = request.form.get("username").strip()
-        password = request.form.get("password")
-        confirmation = request.form.get("confirmation")
+        username = request.form.get("username", default="").strip()
+        password = request.form.get("password", default="")
+        confirmation = request.form.get("confirmation", default="")
 
         # Validate registration
         # Ensure username was submitted
@@ -144,7 +144,8 @@ def search():
     # Delete previous searches
     db.execute("DELETE FROM searches")
 
-    name = request.args.get("name")
+    name = request.args.get("name", default="").strip()
+
     songs = search_song(name)
 
     # Flash error message if song not found!
