@@ -1,11 +1,10 @@
 venv/
 __pycache__/
 flask_session/
-async-test/
+static/downloads/audio/*
 info.json
 *test*
 start.ps1
 start.sh
 pyrightconfig.json
-Procfile
 .download_cache
