@@ -4,6 +4,7 @@ import music_tag
 import re
 
 from platform import system
+from threading import Thread  
 from youtube_title_parse import get_artist_title
 from colorama import Fore, Style
 from helpers.songs import search_song
@@ -68,14 +69,15 @@ def main():
         path = path[:-1]
 
     # Download collected or given songs
-    download_songs(song_ids)
+    download_songs_normal(song_ids)
+    # download_songs_faster(song_ids)         # Uses threading 
 
     # Make dir to store downloaded songs
     if not os.path.exists(path) or not os.path.isdir(path):
         os.mkdir(path)
 
     # Modify metadata, rename and move the song
-    print("Moving files to destination..")
+    print(f"Moving files to destination: {path}")
     song_files = os.listdir(CACHE)
     for file in song_files:
 
@@ -144,8 +146,8 @@ def collect_songs():
     return ids
 
 
-"""Download songs using yt-dlp"""
-def download_songs(song_ids):
+"""Download songs normally using yt-dlp"""
+def download_songs_normal(song_ids):
 
     # Download songs in a cache folder
     print("Starting download...\n")
@@ -156,6 +158,34 @@ def download_songs(song_ids):
     for id in song_ids:
         os.system(f"yt-dlp {output_template} https://www.youtube.com/watch?v={id}")
         print()
+
+
+"""Download songs faster by opening multiople threads"""
+def download_songs_faster(song_ids):
+
+    print("🚀 Downloading parallely...")
+    # Output template for downloading
+    if system() == "Linux":
+        output_template = f"-o {CACHE}/%\\(title\\)s.%\\(ext\\)s"
+    else:
+        output_template = f"-o {CACHE}/%(title)s.%(ext)s"
+
+    # Downloads a single song, given its id
+    def download(id):
+        os.system(f"yt-dlp {output_template} https://www.youtube.com/watch?v={id}")
+
+    # Make multiple download threads
+    threads = []
+    for song_id in song_ids:
+        threads.append(Thread(target=download, args=(song_id,)))
+
+    # Start all threads
+    for thread in threads:
+        thread.start()
+
+    # Wait for threads to complete
+    for thread in threads:
+        thread.join()
 
 
 """Display a warning message"""
