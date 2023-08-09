@@ -1,196 +1,170 @@
-import os
 import sys
-import music_tag
 import re
-
-from platform import system
-from threading import Thread  
-from youtube_title_parse import get_artist_title
-from colorama import Fore, Style
+import yt_dlp
+from pathlib import Path
 from helpers.songs import search_song
 
-CACHE = ".download_cache"
+DEBUG_MODE = True
+LINK_PATTERN = r'^https://(?:www\.)?youtu\.?be(?:\.com)?/(?:watch\?v=)?(.*)'
 
 def main():
-
     usage = ('''Usage:
-    python download.py -q song1 song2 youtube-link ... (Quick download)
-    python download.py -i                              (Interactive download) 
+    python download.py -q song1 song2 yt-link ... (Quick download)
+    python download.py -f filename                (Download from file)
+    python download.py -i                         (Interactive download) 
     ''')
     if len(sys.argv) < 2:
         sys.exit(usage)
 
-    # Songs to download
-    song_ids = []
-    songs_not_found = []
-    songs_queried = 0
-
-    # Quick download
-    if sys.argv[1] == '-q':
-
-        # Exit if no songs given
-        songs = sys.argv[2:]
-        songs_queried = len(songs)
-        if not songs:
-            warn("No songs specified!")
-            sys.exit()
-
-        print("Searching...")
-        for song in songs:
-
-            # A youtube link can also be given
-            if matches := re.search(r'^https://(?:www\.)?youtu\.?be(?:\.com)?/(?:watch\?v=)?(.*)', song):
-                song_ids.append(matches.group(1))
-                continue
-
-            result = search_song(song)
-            try:
-                song_ids.append(result[0]['id'])
-            except IndexError:
-                print(f"'{song}' not found!")
-                songs_not_found.append(song)
-                continue
-
-    # Step by Step (Interactive) download
-    elif sys.argv[1] == '-i':
-        song_ids = collect_songs()
-        songs_queried = len(song_ids)
-    else:
-        sys.exit(usage)
-
-    if not song_ids:
-        sys.exit("Nothing to download!")
-
-    # Prompt for a saving path
-    path = os.path.expanduser(
-            input("Download path (default '$XDG_MUSIC_DIR'  or '~/Music'): ")
-            or os.getenv("XDG_MUSIC_DIR") or "~/Music")
-    if path.endswith('/'):
-        path = path[:-1]
-
-    # Download collected or given songs
-    download_songs_normal(song_ids)
-    # download_songs_faster(song_ids)         # Uses threading 
-
-    # Make dir to store downloaded songs
-    if not os.path.exists(path) or not os.path.isdir(path):
-        os.mkdir(path)
-
-    # Modify metadata, rename and move the song
-    print(f"Moving files to destination: {path}")
-    song_files = os.listdir(CACHE)
-    for file in song_files:
-
-        title, ext = ''.join(file.split('.')[:-1]), file.split('.')[-1]
-
-        song_title = ""
-        try:
-            # Write metadata
-            data = music_tag.load_file(f"{CACHE}/{file}")
-            artist, song_title = get_artist_title(title)
-            data['tracktitle'] = song_title
-            data['artist'] = artist
-            data.save()
-        except Exception as e:
-            # print(f"{e} while parsing {file}, skipping...")
-            print(f"Error parsing metadata for {file}, skipping..")
-            pass
-
-        # Move the file
-        new_file = f"{song_title}.{ext}" if song_title else file
-        os.rename(f"{CACHE}/{file}", f"{path}/{new_file}")
-
-    # Show songs not found while quick downloading
-    failed_songs = len(songs_not_found)
-    if failed_songs > 0:
-        warn(f"\nFailed downloads")
-        for song_not_found in songs_not_found:
-            print(song_not_found)
-
-    # Show download status
-    print(f"\n{songs_queried} song(s) queried, {songs_queried - failed_songs} downloaded, {failed_songs} failed.")
-
-"""Collect Songs one by one"""
-def collect_songs():
-
+    method = sys.argv[1]
     ids = []
 
-    print("Mention songs to downlaod, hit 'd' when done")
+    # Interactive selection of songs
+    if method == '-i':
+        ids = collect_ids_interactively()
+
+    # Quick download (Gets queries from command line)
+    elif method == '-q':
+        queries = sys.argv[2:]
+        if not queries:
+            sys.exit(usage)
+
+        print("Searching...")
+        for i, query in enumerate(queries):
+            if DEBUG_MODE:
+                print("DEBUG: Item", i, query)
+
+            if matches := re.search(LINK_PATTERN, query):
+                if DEBUG_MODE:
+                    print("DEBUG: Matches a link")
+                ids.append(matches.group(1))
+                continue
+
+            results = search_song(query)
+            if not results:
+                print(f"{query} not found, skipping..")
+                continue
+            ids.append(results[0]['id'])
+
+    # Load queries from file then download
+    elif method == '-f':
+        if len(sys.argv) != 3:
+            sys.exit(usage)
+
+        file = sys.argv[2]
+        if DEBUG_MODE:
+            print(f"DEBUG: Reading from file: {file}")
+        if not file or not Path(file).exists():
+            sys.exit("File not found!")
+
+        print("Searching...")
+        with open(file) as f:
+            for i, query in enumerate(f):
+                query = query.strip()
+                if not query:
+                    continue
+                if DEBUG_MODE: 
+                    print("DEBUG: Item", i, query)
+
+                if matches := re.search(LINK_PATTERN, query):
+                    if DEBUG_MODE:
+                        print("DEBUG: Matches a link")
+                    ids.append(matches.group(1))
+                    continue
+
+                results = search_song(query)
+                if not results:
+                    print(f"{query} not found, skipping..")
+                    continue
+                ids.append(results[0]['id'])
+
+    if len(ids) == 0:
+        sys.exit("No songs to download!")
+
+    print(f"{len(ids)} ready to download.")
+
+    # Download on a temp dir first, then move downloaded files
+    tmp_dir = "./tmp"
+    target_dir = input("Download dir (default: ~/Music): ") or "~/Music"
+
+    downloaded = download_songs(ids, tmp_dir)
+    if downloaded > 0:
+        move_files(tmp_dir, target_dir)
+
+    print(f"{len(ids)} tried to download, {downloaded} downloaded.")
+
+
+def collect_ids_interactively():
+    print("Enter songs/links, hit 'd' when done")
+    ids = []
     while True:
         query = input(">> ")
-        if query == 'd':
+        if query == 'd': 
             break
-
-        # A youtube link can also be given
-        if matches := re.search(r'^https://(?:www\.)?youtu\.?be(?:\.com)?/(?:watch\?v=)?(.*)', query):
+        if matches := re.search(LINK_PATTERN, query):
+            if DEBUG_MODE:
+                print("DEBUG: Matches a link")
             ids.append(matches.group(1))
-            print("Added")
             continue
-
         results = search_song(query)
-        if not results:
-            print("Song not found, try again")
-            continue
-
-        # Confirm song
-        title = results[0]['title']
-        ans = input(f">> {title} ? (y/n) ")
-        if ans == 'n':
-            print("Discarded")
-            continue
-        print("Added")
-
-        # Store song's info in a list
-        ids.append(results[0]['id'])
-
+        for result in results:
+            response = input(f"{result['title']}? (y:yes, n:next, s:skip) ").strip()
+            if response == 'y':
+                ids.append(result['id'])
+            elif response == 'n':
+                continue
+            break
+        else:
+            print("End of results, skipping..")
     return ids
 
 
-"""Download songs normally using yt-dlp"""
-def download_songs_normal(song_ids):
+def download_songs(song_ids, target_dir):
+    """Downloads songs given their id/links"""
+    if not song_ids:
+        sys.exit("No song id/link found!")
+    if DEBUG_MODE:
+        print(f"DEBUG: Downloading: {song_ids}")
 
-    # Download songs in a cache folder
-    print("Starting download...\n")
-    if system() == "Linux":
-        output_template = f"-o {CACHE}/%\\(title\\)s.%\\(ext\\)s"
-    else:
-        output_template = f"-o {CACHE}/%(title)s.%(ext)s"
-    for id in song_ids:
-        os.system(f"yt-dlp {output_template} https://www.youtube.com/watch?v={id}")
-        print()
+    # Use best quality and download as mp3 to given directory
+    ydl_opts = { 
+        'outtmpl': f'{target_dir}/%(title)s.%(ext)s',
+        'format': 'bestaudio/best',
+        'verbose': DEBUG_MODE,
+        'writethumbnail': 'true',
+        'postprocessors': [
+            { 'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': 0, }, 
+            { 'key': 'FFmpegMetadata', 'add_metadata': True, }, 
+            { 'key': 'EmbedThumbnail', 'already_have_thumbnail': False, }
+        ], 
+    }
 
+    downloaded = 0
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        for i, song_id in enumerate(song_ids):
+            try:
+                url = f'https://youtube.com/watch?v={song_id}'
+                error_code = ydl.download(url)
+                downloaded += 1
+                if DEBUG_MODE:
+                    print(f"DEBUG: Error code for item {i}: {error_code}")
+            except Exception:
+                if DEBUG_MODE:
+                    print()
 
-"""Download songs faster by opening multiople threads"""
-def download_songs_faster(song_ids):
-
-    print("🚀 Downloading parallely...")
-    # Output template for downloading
-    if system() == "Linux":
-        output_template = f"-o {CACHE}/%\\(title\\)s.%\\(ext\\)s"
-    else:
-        output_template = f"-o {CACHE}/%(title)s.%(ext)s"
-
-    # Downloads a single song, given its id
-    def download(id):
-        os.system(f"yt-dlp {output_template} https://www.youtube.com/watch?v={id}")
-
-    # Make multiple download threads
-    threads = []
-    for song_id in song_ids:
-        threads.append(Thread(target=download, args=(song_id,)))
-
-    # Start all threads
-    for thread in threads:
-        thread.start()
-
-    # Wait for threads to complete
-    for thread in threads:
-        thread.join()
+    return downloaded
 
 
-"""Display a warning message"""
-def warn(text):
-    print(f"{Fore.RED}{text}{Style.RESET_ALL}")
+def move_files(source_dir, target_dir):
+    source_dir = Path(source_dir).expanduser()
+    target_dir = Path(target_dir).expanduser()
+
+    if not target_dir.is_dir():
+        target_dir.mkdir(parents=True)
+
+    for file in source_dir.iterdir():
+        file.rename(target_dir / file.name)
+        print(file, '->', target_dir / file.name)
 
 
 if __name__ == "__main__":
